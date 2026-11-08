@@ -674,7 +674,6 @@ function home(){
     var row=h('div',{class:'prog',style:'margin:0'});row.appendChild(starsEl(labStarCount(l),3));row.appendChild(h('div',{class:'bar'},h('i',{style:'width:'+r.p+'%'})));c.appendChild(row);
     g.appendChild(c)});
   app.appendChild(g);
-  app.appendChild(feedbackCard());
   document.title='مختبر الأعمال الرقمية';
 }
 
@@ -918,8 +917,6 @@ function about(){
   b2.appendChild(row);b2.appendChild(tmp);
   b2.appendChild(h('div',{style:'color:var(--muted)'},h('span',{class:'visits-text',text:VT||'عدد الزيارات سيظهر هنا.'})));
   app.appendChild(b2);
-  app.appendChild(feedbackCard());
-  var bres=h('div',{class:'box'},h('h2',{text:'نتائج التقييم'})),rh=h('div');bres.appendChild(rh);app.appendChild(bres);feedbackResults(rh);
   app.appendChild(h('p',{style:'color:var(--muted);font-size:14.5px',text:'واجهات الأدوات تتغير، فإن اختلف اسم زر فابحث عن أقرب اسم له.'}));
   document.title='عنّا · مختبر الأعمال الرقمية';window.scrollTo(0,0);
 }
