@@ -84,6 +84,7 @@ header.top .wrap{display:flex;align-items:center;gap:10px;min-height:62px}
 .logo-slot{width:128px;height:128px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none;border-bottom:6px solid rgba(0,0,0,.2);overflow:hidden;padding:10px}
 .logo-slot img{max-width:100%;max-height:100%;object-fit:contain}
 .vcard{display:flex;align-items:center;gap:14px;justify-content:center;margin:22px auto 6px;max-width:340px;padding:12px 20px;border-radius:24px;background:linear-gradient(135deg,#FFE066,#FF9AA2);border:3px solid var(--line);border-bottom-width:6px;color:#1F2A44}.vc-ic{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:#fff}.vc-ic svg{width:26px;height:26px}.vc-num{font-family:var(--display);font-weight:800;font-size:32px;line-height:1.1}.vc-lbl{font-size:15px;font-weight:600}
+.lab-wrap{position:relative;display:flex;flex-direction:column;gap:8px}.lab-wrap .lab-card{flex:1}.info-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:4px;font-family:var(--body);font-weight:600;font-size:15px;padding:3px 14px;border:2px solid var(--line);border-bottom-width:4px;border-radius:14px;background:var(--card);color:var(--ink);cursor:pointer}.info-btn svg{width:18px;height:18px}.info-panel{background:var(--card);border:2px dashed var(--c);border-radius:16px;padding:10px 14px;font-size:16px;line-height:1.8}.info-panel[hidden]{display:none}.lvl{font-size:14px;font-weight:700;color:var(--c)}
 .org{font-weight:500;opacity:.92;margin-bottom:2px}
 .mascot{width:118px;flex:none;animation:bob 3.2s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-7px)}}
@@ -233,7 +234,7 @@ details.box summary{cursor:pointer;font-family:var(--display);font-size:23px;fon
 /* ---------- data ---------- */
 var S=function(t,ui,code){return{t:t,ui:ui||[],code:code||''}};
 var LABS=[
-{id:1,title:'نموذج العمل الرقمي',tool:'Canva',url:'https://www.canva.com',min:90,
+{id:1,ic:1,title:'نموذج العمل الرقمي',tool:'Canva',url:'https://www.canva.com',min:90,
  link:'نموذج العمل هو مخطط هندسة النظام للشركة. كما ترسم معمارية برنامج قبل كتابته، ترسم نموذج العمل قبل إطلاق الشركة.',
  goal:'تصميم نموذج عمل من 9 مربعات لشركة رقمية جديدة.',
  prep:['الطلاب في فرق من 2 إلى 3.','كل فريق يختار فكرة شركة رقمية: توصيل طعام، متجر ملابس، دروس خصوصية أونلاين، صيانة حواسيب.'],
@@ -259,7 +260,7 @@ var LABS=[
  ok:['المربعات التسعة ممتلئة.','كل مربع يذكر شيئًا رقميًا محددًا.','القيمة المقدّمة مكتوبة بجملة واحدة واضحة.'],
  err:['عميل عام جدًا مثل "كل الناس". الحل: اختر فئة واحدة محددة.','خلط التكاليف بالموارد. التكاليف ما تدفعه. الموارد ما تملكه.']},
 
-{id:2,title:'موقع الشركة',tool:'Google Sites',url:'https://sites.google.com',min:90,
+{id:2,ic:2,title:'موقع الشركة',tool:'Google Sites',url:'https://sites.google.com',min:90,
  link:'الموقع هو الواجهة الأمامية للشركة. فيه يرى العميل القيمة التي كتبتها في المختبر الأول.',
  goal:'بناء موقع من 4 صفحات بلا كتابة كود.',
  prep:['نموذج العمل من المختبر 1 جاهز.','شعار بسيط من Canva إن أمكن.'],
@@ -278,7 +279,63 @@ var LABS=[
  ok:['الموقع يفتح من هاتف زميل بالرابط.','أربع صفحات تعمل من القائمة.','النموذج يسجّل ردودًا فعلية. أرسل ردًا تجريبيًا.'],
  err:['نسيان النشر، فيظهر الرابط "غير متاح". الحل: اضغط Publish.','نموذج التواصل غير مشارَك. الحل: اجعل النموذج متاحًا لأي شخص لديه الرابط.']},
 
-{id:3,title:'المتجر الإلكتروني',tool:'Ecwid',url:'https://www.ecwid.com',min:120,
+{id:3,ic:6,title:'إدارة المشروع Kanban',tool:'Trello',url:'https://trello.com',min:90,
+ link:'أسلوب Kanban يعرض العمل في أعمدة حسب الحالة، وهو نفس فكرة متابعة Issues في مشاريع البرمجة. المهمة تنتقل بين حالات محددة.',
+ goal:'تقسيم مشروع إطلاق الشركة إلى مهام وتوزيعها على الفريق.',
+ prep:['كل فريق يكتب 12 مهمة لإطلاق شركته، مثل تصميم الشعار وتصوير المنتجات وكتابة وصف الموقع.'],
+ steps:[
+  S('سجّل الدخول بحساب Google.',['trello.com']),
+  S('أنشئ لوحة جديدة باسم "إطلاق شركة" ثم اسم شركتك.',['Create board']),
+  S('أنشئ 4 قوائم بهذا الترتيب.',['To Do','Doing','Review','Done']),
+  S('أضف بطاقات المهام الاثنتي عشرة في عمود To Do.',['Add a card']),
+  S('افتح كل بطاقة وأضف وصفًا وتاريخ استحقاق وقائمة مهام فرعية.',['Description','Due date','Checklist']),
+  S('ادعُ أعضاء الفريق بالبريد.',['Share']),
+  S('وزّع كل مهمة على عضو.',['Members']),
+  S('أضف ألوانًا للأولوية: أحمر عاجل، أصفر متوسط، أخضر عادي.',['Labels']),
+  S('اسحب 3 بطاقات إلى Doing وبطاقتين إلى Done.'),
+  S('حدد حدًا أقصى للمهام الجارية: مهمتان لكل عضو. هذا هو WIP Limit.')],
+ out:'رابط اللوحة + لقطة شاشة تظهر توزيع البطاقات على الأعمدة.',
+ ok:['12 بطاقة بمواعيد ومسؤولين.','توزيع منطقي للمهام على الأعمدة.','لكل عضو مهمة واحدة على الأقل.'],
+ err:['مهام كبيرة جدًا تبقى في Doing. قسّمها إلى مهام أصغر.','مهام بلا مسؤول. لكل بطاقة شخص واحد.']},
+
+{id:4,ic:10,title:'الذكاء الاصطناعي وهندسة الأوامر',tool:'ChatGPT أو Gemini أو Claude',url:'https://gemini.google.com',min:90,
+ link:'الأمر Prompt هو مدخل النظام. مدخل منظّم يعطي مخرجات أفضل. وتحليل المنافسين والتخطيط التسويقي من أكثر ما يُنجز بهذه الأدوات.',
+ goal:'كتابة أمر منظّم من 5 أجزاء وتقييم مخرجات الذكاء الاصطناعي.',
+ prep:['حساب مجاني في أحد النماذج.','نموذج العمل من المختبر 1 جاهز.','القاعدة: الدور، السياق، المهمة، القيود، الشكل. اكتب أمرك بهذه الأجزاء الخمسة.'],
+ steps:[
+  S('افتح أداة الذكاء الاصطناعي التي اخترتها.'),
+  S('جرّب أمرًا ضعيفًا أولًا، واحفظ النتيجة.',[], 'Write a marketing plan'),
+  S('اكتب الأمر المنظّم. غيّر ما بين الأقواس إلى بيانات شركتك.',[], 'You are a digital marketing consultant. My company is [name], it sells [product] to [customers] in Mosul. Create a 30-day social media plan. Use a friendly tone, in Arabic, max 300 words. Format the answer as a table with columns: day, platform, post idea.'),
+  S('قارن النتيجتين، واكتب ما الذي تغيّر.'),
+  S('اطلب تحليل منافسين.',[], 'Analyze 3 competitors for [product] in Iraq. Compare price, channels, and weaknesses. Present as a table.'),
+  S('تحقق من معلومة واحدة على الأقل من مصدر آخر. الذكاء الاصطناعي يخطئ أحيانًا ويخترع أسماء شركات.'),
+  S('اطلب كتابة 3 منشورات إعلانية لشركتك.'),
+  S('اجمع في مستند واحد: الأمر الضعيف، الأمر الجيد، الخطة، المنشورات، وملاحظتك على دقة المعلومات.')],
+ out:'ملف واحد فيه مقارنة الأمر الضعيف بالجيد مع خطة التسويق.',
+ ok:['الأمر الجيد يحتوي الأجزاء الخمسة.','الطالب يشرح سبب تحسّن النتيجة.','الطالب ذكر معلومة تحقق منها.'],
+ err:['نسخ ناتج الذكاء الاصطناعي دون مراجعة. الطالب مسؤول عن صحة ما يسلّمه.','أمر قصير بلا سياق. استخدم الأجزاء الخمسة.']},
+
+{id:5,ic:7,title:'قاعدة بيانات الطلبات',tool:'Google Forms + Sheets',url:'https://forms.google.com',min:90,
+ link:'النموذج واجهة إدخال بيانات. والجدول قاعدة البيانات التي تستقبل كل إجابة كسجل جديد. هذا أساس لوحة المؤشرات في المختبر التالي.',
+ goal:'نموذج طلبات يكتب في جدول، مع معادلات بسيطة للتحليل.',
+ prep:['افتح الموقع:'],
+ steps:[
+  S('أنشئ نموذجًا فارغًا.',['forms.google.com','Blank form']),
+  S('اكتب العنوان: طلب شراء من اسم الشركة.'),
+  S('أضف الأسئلة بهذا الترتيب: الاسم (إجابة قصيرة)، الهاتف (إجابة قصيرة)، المنتج (قائمة منسدلة)، الكمية (إجابة قصيرة مع تحقق أنها رقم)، المحافظة (اختيار من متعدد).',['Short answer','Dropdown','Multiple choice']),
+  S('اجعل الأسئلة إجبارية.',['Required']),
+  S('اربط النموذج بجدول.',['Responses','Link to Sheets']),
+  S('اضغط الإرسال وانسخ الرابط.',['Send']),
+  S('املأ النموذج 15 مرة ببيانات وهمية. وزّعوا المملوء على أعضاء الفريق.'),
+  S('افتح الجدول. الأعمدة: A التاريخ، B الاسم، C الهاتف، D المنتج، E الكمية، F المحافظة. أنشئ ورقة جديدة اسمها Prices: اسم المنتج في العمود A وسعره في B.',['Prices']),
+  S('في الخلية G2 اكتب معادلة السعر الإجمالي، ثم اسحبها لأسفل.',[], '=E2*VLOOKUP(D2,Prices!A:B,2,FALSE)'),
+  S('احسب مجموع المبيعات في خلية منفصلة.',[], '=SUM(G2:G)'),
+  S('أنشئ مخططًا لعدد الطلبات لكل منتج.',['Insert','Chart'])],
+ out:'رابط النموذج + رابط الجدول مشارك مع المدرّس بصلاحية قراءة.',
+ ok:['15 طلبًا تظهر في الجدول.','عمود الإجمالي يحسب بشكل صحيح.','مخطط واحد على الأقل.'],
+ err:['اسم المنتج في Prices يختلف حرفًا عن خيار النموذج، فتظهر خطأ. انسخ الأسماء ولا تكتبها.','الفاصلة في المعادلة قد تكون فاصلة منقوطة حسب إعدادات الجهاز. جرّب الفاصلة المنقوطة إن ظهر خطأ.']},
+
+{id:6,ic:3,title:'المتجر الإلكتروني',tool:'Ecwid',url:'https://www.ecwid.com',min:120,
  link:'التجارة الإلكترونية تحوّل الموقع من صفحة عرض إلى نظام بيع. فيه قاعدة منتجات وسلة شراء وطلبات.',
  goal:'إضافة 5 منتجات وإعداد الشحن والدفع وإجراء طلب تجريبي.',
  prep:['صور وأسماء وأسعار ووصف قصير لخمسة منتجات.','تحقق من شروط الخطة المجانية قبل الدرس. لا تُدخل بطاقة بنكية في أي أداة.','بديل: Shopify بنسخة تجريبية، وقد تطلب بطاقة، فلا تستخدمه مع الطلاب.'],
@@ -299,7 +356,7 @@ var LABS=[
  ok:['5 منتجات بصور وأسعار.','الشحن والدفع مضبوطان.','طلب تجريبي مسجّل.'],
  err:['نسيان وضع التجربة. تأكد أن المتجر لا يقبل دفعًا حقيقيًا.','صور كبيرة جدًا تبطئ المتجر. اضغطها قبل الرفع.']},
 
-{id:4,title:'إدارة العملاء CRM',tool:'HubSpot CRM',url:'https://www.hubspot.com',min:90,
+{id:7,ic:4,title:'إدارة العملاء CRM',tool:'HubSpot CRM',url:'https://www.hubspot.com',min:90,
  link:'نظام CRM قاعدة بيانات للعملاء: جداول للأشخاص والشركات والصفقات. والصفقة تمر بمراحل كأنها حالة تتغير.',
  goal:'إدخال عملاء وإنشاء صفقات وتحريكها عبر مراحل البيع.',
  prep:['قائمة 8 عملاء وهميين: اسم وبريد وهاتف وشركة. أسماء وهمية فقط.'],
@@ -319,70 +376,28 @@ var LABS=[
  ok:['8 عملاء مسجّلون مع شركاتهم.','4 صفقات في مراحل مختلفة.','نشاط واحد ومهمة واحدة مسجّلان.'],
  err:['إدخال أرقام هواتف حقيقية. استخدم بيانات وهمية فقط.','إنشاء صفقة قبل العميل. الترتيب: عميل ثم شركة ثم صفقة.']},
 
-{id:5,title:'نظام ERP',tool:'Odoo',url:'https://www.odoo.com',min:120,
- link:'نظام ERP قاعدة بيانات واحدة تشترك فيها كل الأقسام. عند بيع منتج ينقص المخزون وتُسجَّل فاتورة وتتغير المحاسبة تلقائيًا، كأنها Transaction واحدة تحدّث أكثر من جدول.',
- goal:'تنفيذ دورة مستندية كاملة: منتج، أمر بيع، تسليم، فاتورة، دفع.',
- prep:['المنتجات الخمسة من المختبر 3.','شروط الخطة المجانية تتغير. تحقق قبل الدرس. البدائل: Zoho Inventory أو ERPNext.'],
+{id:8,ic:9,title:'تحليل الويب',tool:'Google Analytics',url:'https://analytics.google.com',min:90,
+ link:'Analytics نظام Logging للموقع. يسجّل كل زيارة وكل نقرة كحدث، ثم تحلّل الأحداث لفهم سلوك المستخدم.',
+ goal:'قراءة تقارير الزوار واستخراج قرار إداري منها.',
+ prep:['مواقع الطلاب لن يزورها عدد كافٍ للتحليل، لذلك نستخدم حساب Google التجريبي الجاهز بمتجر حقيقي.','ابحث في Google عن:  Google Analytics demo account  وافتح الصفحة الرسمية وأضف الحساب التجريبي إلى حسابك.'],
  steps:[
-  S('افتح الموقع وجرّب مجانًا.',['odoo.com','Try it free']),
-  S('ابدأ بتطبيق واحد فقط، ثم أضف الباقي لاحقًا.',['Sales','Inventory','Invoicing']),
-  S('أنشئ حسابًا وانتظر تجهيز قاعدة البيانات.'),
-  S('أضف المنتجات بالاسم والسعر والكلفة.',['Sales','Products','New']),
-  S('أدخل كمية مخزون 10 وحدات لكل منتج.',['Update Quantity']),
-  S('أنشئ عميلًا.',['Customers','New']),
-  S('أنشئ عرض سعر لمنتجين بكميات.',['Quotations','New']),
-  S('أكّد الطلب.',['Confirm']),
-  S('سلّم البضاعة من المخزن.',['Delivery','Validate']),
-  S('ارجع لمخزون المنتج. لاحظ أن الكمية نقصت تلقائيًا. هذا هو التكامل.'),
-  S('أنشئ الفاتورة ثم أكّدها.',['Create Invoice','Confirm']),
-  S('سجّل دفعة العميل.',['Register Payment'])],
- out:'3 لقطات شاشة: أمر البيع، المخزون بعد التسليم، الفاتورة المدفوعة.',
- ok:['الدورة كاملة من عرض السعر إلى الدفع.','المخزون انخفض بمقدار الكمية المباعة.','الطالب يشرح لماذا تحدّث المخزون دون إدخال يدوي.'],
- err:['اختيار تطبيقات كثيرة دفعة واحدة. ابدأ بتطبيق واحد.','نسيان الضغط على Validate فلا ينقص المخزون.']},
+  S('افتح الحساب التجريبي الذي أضفته.'),
+  S('افتح لقطة التقارير.',['Reports','Reports snapshot']),
+  S('اكتب في ورقة أربعة أرقام لآخر 28 يومًا.',['Users','New users','Average engagement time','Event count']),
+  S('افتح تقرير مصادر الزوار، واكتب أكثر 3 مصادر.',['Acquisition','Traffic acquisition']),
+  S('افتح تقرير الصفحات، واكتب أكثر صفحتين مشاهدة.',['Engagement','Pages and screens']),
+  S('افتح تقرير الجمهور، واكتب الدولة الأكثر زيارة.',['User','Demographics','Demographic details']),
+  S('افتح تقرير مشتريات التجارة إن وفّره الحساب.',['Monetization','Ecommerce purchases']),
+  S('اكتب ثلاث ملاحظات إدارية بجمل قصيرة. مثال: نركّز الإعلان على المصدر الأكثر زيارة.'),
+  S('اكتب توصية واحدة لمدير التسويق.')],
+ out:'ورقة من صفحة واحدة فيها الأرقام والملاحظات والتوصية.',
+ ok:['4 مؤشرات مكتوبة بشكل صحيح.','مصادر الزوار والصفحات مذكورة.','التوصية مبنية على رقم وليس على رأي شخصي.'],
+ err:['أرقام من نطاق زمني مختلف. ثبّت النطاق على آخر 28 يومًا لكل الطلاب.','أسماء القوائم تختلف قليلًا لأن Google تحدّث الواجهة. ابحث عن اسم التقرير في خانة البحث.']},
 
-{id:6,title:'إدارة المشروع Kanban',tool:'Trello',url:'https://trello.com',min:90,
- link:'أسلوب Kanban يعرض العمل في أعمدة حسب الحالة، وهو نفس فكرة متابعة Issues في مشاريع البرمجة. المهمة تنتقل بين حالات محددة.',
- goal:'تقسيم مشروع إطلاق الشركة إلى مهام وتوزيعها على الفريق.',
- prep:['كل فريق يكتب 12 مهمة لإطلاق شركته، مثل تصميم الشعار وتصوير المنتجات وكتابة وصف الموقع.'],
- steps:[
-  S('سجّل الدخول بحساب Google.',['trello.com']),
-  S('أنشئ لوحة جديدة باسم "إطلاق شركة" ثم اسم شركتك.',['Create board']),
-  S('أنشئ 4 قوائم بهذا الترتيب.',['To Do','Doing','Review','Done']),
-  S('أضف بطاقات المهام الاثنتي عشرة في عمود To Do.',['Add a card']),
-  S('افتح كل بطاقة وأضف وصفًا وتاريخ استحقاق وقائمة مهام فرعية.',['Description','Due date','Checklist']),
-  S('ادعُ أعضاء الفريق بالبريد.',['Share']),
-  S('وزّع كل مهمة على عضو.',['Members']),
-  S('أضف ألوانًا للأولوية: أحمر عاجل، أصفر متوسط، أخضر عادي.',['Labels']),
-  S('اسحب 3 بطاقات إلى Doing وبطاقتين إلى Done.'),
-  S('حدد حدًا أقصى للمهام الجارية: مهمتان لكل عضو. هذا هو WIP Limit.')],
- out:'رابط اللوحة + لقطة شاشة تظهر توزيع البطاقات على الأعمدة.',
- ok:['12 بطاقة بمواعيد ومسؤولين.','توزيع منطقي للمهام على الأعمدة.','لكل عضو مهمة واحدة على الأقل.'],
- err:['مهام كبيرة جدًا تبقى في Doing. قسّمها إلى مهام أصغر.','مهام بلا مسؤول. لكل بطاقة شخص واحد.']},
-
-{id:7,title:'قاعدة بيانات الطلبات',tool:'Google Forms + Sheets',url:'https://forms.google.com',min:90,
- link:'النموذج واجهة إدخال بيانات. والجدول قاعدة البيانات التي تستقبل كل إجابة كسجل جديد. هذا أساس لوحة المؤشرات في المختبر التالي.',
- goal:'نموذج طلبات يكتب في جدول، مع معادلات بسيطة للتحليل.',
- prep:['افتح الموقع:'],
- steps:[
-  S('أنشئ نموذجًا فارغًا.',['forms.google.com','Blank form']),
-  S('اكتب العنوان: طلب شراء من اسم الشركة.'),
-  S('أضف الأسئلة بهذا الترتيب: الاسم (إجابة قصيرة)، الهاتف (إجابة قصيرة)، المنتج (قائمة منسدلة)، الكمية (إجابة قصيرة مع تحقق أنها رقم)، المحافظة (اختيار من متعدد).',['Short answer','Dropdown','Multiple choice']),
-  S('اجعل الأسئلة إجبارية.',['Required']),
-  S('اربط النموذج بجدول.',['Responses','Link to Sheets']),
-  S('اضغط الإرسال وانسخ الرابط.',['Send']),
-  S('املأ النموذج 15 مرة ببيانات وهمية. وزّعوا المملوء على أعضاء الفريق.'),
-  S('افتح الجدول. الأعمدة: A التاريخ، B الاسم، C الهاتف، D المنتج، E الكمية، F المحافظة. أنشئ ورقة جديدة اسمها Prices: اسم المنتج في العمود A وسعره في B.',['Prices']),
-  S('في الخلية G2 اكتب معادلة السعر الإجمالي، ثم اسحبها لأسفل.',[], '=E2*VLOOKUP(D2,Prices!A:B,2,FALSE)'),
-  S('احسب مجموع المبيعات في خلية منفصلة.',[], '=SUM(G2:G)'),
-  S('أنشئ مخططًا لعدد الطلبات لكل منتج.',['Insert','Chart'])],
- out:'رابط النموذج + رابط الجدول مشارك مع المدرّس بصلاحية قراءة.',
- ok:['15 طلبًا تظهر في الجدول.','عمود الإجمالي يحسب بشكل صحيح.','مخطط واحد على الأقل.'],
- err:['اسم المنتج في Prices يختلف حرفًا عن خيار النموذج، فتظهر خطأ. انسخ الأسماء ولا تكتبها.','الفاصلة في المعادلة قد تكون فاصلة منقوطة حسب إعدادات الجهاز. جرّب الفاصلة المنقوطة إن ظهر خطأ.']},
-
-{id:8,title:'لوحة المؤشرات KPIs',tool:'Looker Studio',url:'https://lookerstudio.google.com',min:120,
+{id:9,ic:8,title:'لوحة المؤشرات KPIs',tool:'Looker Studio',url:'https://lookerstudio.google.com',min:120,
  link:'اللوحة تحوّل البيانات الخام إلى مؤشرات أداء يقرأها المدير بنظرة واحدة. هي استعلام على قاعدة بيانات مع عرض مرئي.',
- goal:'ربط جدول المختبر 7 بلوحة تتحدّث تلقائيًا.',
- prep:['جدول الطلبات من المختبر 7 فيه 15 طلبًا على الأقل.'],
+ goal:'ربط جدول المختبر 5 بلوحة تتحدّث تلقائيًا.',
+ prep:['جدول الطلبات من المختبر 5 فيه 15 طلبًا على الأقل.'],
  steps:[
   S('افتح الموقع بنفس حساب Google.',['lookerstudio.google.com']),
   S('أنشئ تقريرًا جديدًا.',['Create','Report']),
@@ -401,45 +416,10 @@ var LABS=[
  ok:['اللوحة تقرأ من الجدول مباشرة.','الأرقام تتطابق مع الجدول.','الفلتر يغيّر العرض فعلًا.'],
  err:['نوع الحقل نص بدل رقم. غيّر النوع في مصدر البيانات إلى Number.','الورقة الخاطئة مختارة. اختر ورقة إجابات النموذج.']},
 
-{id:9,title:'تحليل الويب',tool:'Google Analytics',url:'https://analytics.google.com',min:90,
- link:'Analytics نظام Logging للموقع. يسجّل كل زيارة وكل نقرة كحدث، ثم تحلّل الأحداث لفهم سلوك المستخدم.',
- goal:'قراءة تقارير الزوار واستخراج قرار إداري منها.',
- prep:['مواقع الطلاب لن يزورها عدد كافٍ للتحليل، لذلك نستخدم حساب Google التجريبي الجاهز بمتجر حقيقي.','ابحث في Google عن:  Google Analytics demo account  وافتح الصفحة الرسمية وأضف الحساب التجريبي إلى حسابك.'],
- steps:[
-  S('افتح الحساب التجريبي الذي أضفته.'),
-  S('افتح لقطة التقارير.',['Reports','Reports snapshot']),
-  S('اكتب في ورقة أربعة أرقام لآخر 28 يومًا.',['Users','New users','Average engagement time','Event count']),
-  S('افتح تقرير مصادر الزوار، واكتب أكثر 3 مصادر.',['Acquisition','Traffic acquisition']),
-  S('افتح تقرير الصفحات، واكتب أكثر صفحتين مشاهدة.',['Engagement','Pages and screens']),
-  S('افتح تقرير الجمهور، واكتب الدولة الأكثر زيارة.',['User','Demographics','Demographic details']),
-  S('افتح تقرير مشتريات التجارة إن وفّره الحساب.',['Monetization','Ecommerce purchases']),
-  S('اكتب ثلاث ملاحظات إدارية بجمل قصيرة. مثال: نركّز الإعلان على المصدر الأكثر زيارة.'),
-  S('اكتب توصية واحدة لمدير التسويق.')],
- out:'ورقة من صفحة واحدة فيها الأرقام والملاحظات والتوصية.',
- ok:['4 مؤشرات مكتوبة بشكل صحيح.','مصادر الزوار والصفحات مذكورة.','التوصية مبنية على رقم وليس على رأي شخصي.'],
- err:['أرقام من نطاق زمني مختلف. ثبّت النطاق على آخر 28 يومًا لكل الطلاب.','أسماء القوائم تختلف قليلًا لأن Google تحدّث الواجهة. ابحث عن اسم التقرير في خانة البحث.']},
-
-{id:10,title:'الذكاء الاصطناعي وهندسة الأوامر',tool:'ChatGPT أو Gemini أو Claude',url:'https://gemini.google.com',min:90,
- link:'الأمر Prompt هو مدخل النظام. مدخل منظّم يعطي مخرجات أفضل. وتحليل المنافسين والتخطيط التسويقي من أكثر ما يُنجز بهذه الأدوات.',
- goal:'كتابة أمر منظّم من 5 أجزاء وتقييم مخرجات الذكاء الاصطناعي.',
- prep:['حساب مجاني في أحد النماذج.','نموذج العمل من المختبر 1 جاهز.','القاعدة: الدور، السياق، المهمة، القيود، الشكل. اكتب أمرك بهذه الأجزاء الخمسة.'],
- steps:[
-  S('افتح أداة الذكاء الاصطناعي التي اخترتها.'),
-  S('جرّب أمرًا ضعيفًا أولًا، واحفظ النتيجة.',[], 'Write a marketing plan'),
-  S('اكتب الأمر المنظّم. غيّر ما بين الأقواس إلى بيانات شركتك.',[], 'You are a digital marketing consultant. My company is [name], it sells [product] to [customers] in Mosul. Create a 30-day social media plan. Use a friendly tone, in Arabic, max 300 words. Format the answer as a table with columns: day, platform, post idea.'),
-  S('قارن النتيجتين، واكتب ما الذي تغيّر.'),
-  S('اطلب تحليل منافسين.',[], 'Analyze 3 competitors for [product] in Iraq. Compare price, channels, and weaknesses. Present as a table.'),
-  S('تحقق من معلومة واحدة على الأقل من مصدر آخر. الذكاء الاصطناعي يخطئ أحيانًا ويخترع أسماء شركات.'),
-  S('اطلب كتابة 3 منشورات إعلانية لشركتك.'),
-  S('اجمع في مستند واحد: الأمر الضعيف، الأمر الجيد، الخطة، المنشورات، وملاحظتك على دقة المعلومات.')],
- out:'ملف واحد فيه مقارنة الأمر الضعيف بالجيد مع خطة التسويق.',
- ok:['الأمر الجيد يحتوي الأجزاء الخمسة.','الطالب يشرح سبب تحسّن النتيجة.','الطالب ذكر معلومة تحقق منها.'],
- err:['نسخ ناتج الذكاء الاصطناعي دون مراجعة. الطالب مسؤول عن صحة ما يسلّمه.','أمر قصير بلا سياق. استخدم الأجزاء الخمسة.']},
-
-{id:11,title:'أتمتة المهام',tool:'Make',url:'https://www.make.com',min:120,
+{id:10,ic:11,title:'أتمتة المهام',tool:'Make',url:'https://www.make.com',min:120,
  link:'الأتمتة قاعدة منطقية: إذا حدث شيء (Trigger) فنفّذ إجراءً (Action). هي فكرة Event Listener في البرمجة، لكن بلا كود.',
  goal:'سيناريو يرسل بريدًا تلقائيًا عند وصول طلب جديد في النموذج.',
- prep:['نموذج الطلبات وجدوله من المختبر 7.','الخطة المجانية لها حد شهري للعمليات. تحقق منه. استخدم عمليات قليلة ولا تترك السيناريو شغّالًا بعد التجربة.'],
+ prep:['نموذج الطلبات وجدوله من المختبر 5.','الخطة المجانية لها حد شهري للعمليات. تحقق منه. استخدم عمليات قليلة ولا تترك السيناريو شغّالًا بعد التجربة.'],
  steps:[
   S('أنشئ حسابًا مجانيًا ببريد Gmail.',['make.com']),
   S('أنشئ سيناريو جديدًا.',['Create a new scenario']),
@@ -458,7 +438,28 @@ var LABS=[
  ok:['البريد وصل بالقيم الصحيحة.','الطالب يشرح الـ Trigger والـ Action بجملتين.','الفلتر يعمل: طلب صغير لا يرسل بريدًا.'],
  err:['السيناريو لا يلتقط الصفوف القديمة. هذا طبيعي. أضف طلبًا جديدًا.','نسيان إيقاف الجدولة فتستهلك الحصة المجانية.','بديل أبسط إن تعذّر Make: إشعارات النموذج المدمجة. Responses ثم Get email notifications for new responses.']},
 
-{id:12,title:'المشروع الختامي',tool:'كل الأدوات السابقة',url:'',min:240,
+{id:11,ic:5,title:'نظام ERP',tool:'Odoo',url:'https://www.odoo.com',min:120,
+ link:'نظام ERP قاعدة بيانات واحدة تشترك فيها كل الأقسام. عند بيع منتج ينقص المخزون وتُسجَّل فاتورة وتتغير المحاسبة تلقائيًا، كأنها Transaction واحدة تحدّث أكثر من جدول.',
+ goal:'تنفيذ دورة مستندية كاملة: منتج، أمر بيع، تسليم، فاتورة، دفع.',
+ prep:['المنتجات الخمسة من المختبر 6.','شروط الخطة المجانية تتغير. تحقق قبل الدرس. البدائل: Zoho Inventory أو ERPNext.'],
+ steps:[
+  S('افتح الموقع وجرّب مجانًا.',['odoo.com','Try it free']),
+  S('ابدأ بتطبيق واحد فقط، ثم أضف الباقي لاحقًا.',['Sales','Inventory','Invoicing']),
+  S('أنشئ حسابًا وانتظر تجهيز قاعدة البيانات.'),
+  S('أضف المنتجات بالاسم والسعر والكلفة.',['Sales','Products','New']),
+  S('أدخل كمية مخزون 10 وحدات لكل منتج.',['Update Quantity']),
+  S('أنشئ عميلًا.',['Customers','New']),
+  S('أنشئ عرض سعر لمنتجين بكميات.',['Quotations','New']),
+  S('أكّد الطلب.',['Confirm']),
+  S('سلّم البضاعة من المخزن.',['Delivery','Validate']),
+  S('ارجع لمخزون المنتج. لاحظ أن الكمية نقصت تلقائيًا. هذا هو التكامل.'),
+  S('أنشئ الفاتورة ثم أكّدها.',['Create Invoice','Confirm']),
+  S('سجّل دفعة العميل.',['Register Payment'])],
+ out:'3 لقطات شاشة: أمر البيع، المخزون بعد التسليم، الفاتورة المدفوعة.',
+ ok:['الدورة كاملة من عرض السعر إلى الدفع.','المخزون انخفض بمقدار الكمية المباعة.','الطالب يشرح لماذا تحدّث المخزون دون إدخال يدوي.'],
+ err:['اختيار تطبيقات كثيرة دفعة واحدة. ابدأ بتطبيق واحد.','نسيان الضغط على Validate فلا ينقص المخزون.']},
+
+{id:12,ic:12,title:'المشروع الختامي',tool:'كل الأدوات السابقة',url:'',min:240,
  link:'هذا هو التكامل. كل أداة اشتغلت منفردة في المختبرات السابقة، والآن تعمل معًا كنظام رقمي واحد للشركة.',
  goal:'تسليم النظام الرقمي الكامل للشركة وعرضه في 7 دقائق.',
  prep:['العرض في محاضرتين: واحدة للتجميع وواحدة للعرض.','هيكل العرض: الشركة والعميل (دقيقة)، جولة على الموقع والمتجر وطلب تجريبي (دقيقتان)، حركة البيانات من الطلب إلى اللوحة (دقيقتان)، الأتمتة والذكاء الاصطناعي (دقيقة)، ما تعلمناه (دقيقة).'],
@@ -480,20 +481,20 @@ var LABS=[
 
 var TOOLS=[
  {n:'Canva',u:'https://www.canva.com',w:'تصميم نموذج العمل والشعار',l:[1,2],c:'مجاني بحساب Google. البديل: Miro.'},
- {n:'Google Sites',u:'https://sites.google.com',w:'بناء موقع الشركة بلا كود',l:[2,3],c:'مجاني مع حساب Google.'},
- {n:'Google Forms',u:'https://forms.google.com',w:'نموذج التواصل ونموذج الطلبات',l:[2,7,11],c:'مجاني.'},
- {n:'Ecwid',u:'https://www.ecwid.com',w:'المتجر الإلكتروني: منتجات وشحن ودفع وطلبات',l:[3],c:'خطة مجانية، تحقق من شروطها. البديل: Shopify بنسخة تجريبية.'},
- {n:'HubSpot CRM',u:'https://www.hubspot.com',w:'إدارة العملاء والصفقات ومراحل البيع',l:[4],c:'أداة CRM مجانية.'},
- {n:'Excel',u:'',w:'تجهيز قائمة العملاء الوهميين واستيرادها إلى HubSpot',l:[4],c:'مثبّت على الحاسوب أو Google Sheets.'},
- {n:'Odoo',u:'https://www.odoo.com',w:'نظام ERP: مبيعات ومخزون وفواتير',l:[5],c:'تجربة مجانية بتطبيق واحد، وشروطها تتغير. البدائل: Zoho Inventory أو ERPNext.'},
- {n:'Trello',u:'https://trello.com',w:'لوحة Kanban وتوزيع المهام على الفريق',l:[6],c:'خطة مجانية.'},
- {n:'Google Sheets',u:'https://sheets.google.com',w:'قاعدة بيانات الطلبات ومعادلات التحليل',l:[7,8,11],c:'مجاني.'},
- {n:'Looker Studio',u:'https://lookerstudio.google.com',w:'لوحة مؤشرات الأداء KPIs',l:[8],c:'مجاني.'},
- {n:'Google Analytics',u:'https://analytics.google.com',w:'تحليل زوار الموقع عبر الحساب التجريبي',l:[9],c:'مجاني.'},
- {n:'ChatGPT أو Gemini أو Claude',u:'https://gemini.google.com',w:'هندسة الأوامر وخطة التسويق وتحليل المنافسين',l:[10,12],c:'يكفي حساب مجاني في أحدها.'},
- {n:'Make',u:'https://www.make.com',w:'أتمتة المهام بين Sheets وGmail',l:[11],c:'خطة مجانية بحد شهري للعمليات. البديل: Zapier.'},
- {n:'Gmail',u:'https://mail.google.com',w:'استقبال رسائل الأتمتة وإنشاء الحسابات',l:[3,11],c:'مجاني.'},
- {n:'Google Docs',u:'https://docs.google.com',w:'ملف الروابط للمشروع الختامي',l:[10,12],c:'مجاني.'}
+ {n:'Google Sites',u:'https://sites.google.com',w:'بناء موقع الشركة بلا كود',l:[2,6],c:'مجاني مع حساب Google.'},
+ {n:'Google Forms',u:'https://forms.google.com',w:'نموذج التواصل ونموذج الطلبات',l:[2,5,10],c:'مجاني.'},
+ {n:'Ecwid',u:'https://www.ecwid.com',w:'المتجر الإلكتروني: منتجات وشحن ودفع وطلبات',l:[6],c:'خطة مجانية، تحقق من شروطها. البديل: Shopify بنسخة تجريبية.'},
+ {n:'HubSpot CRM',u:'https://www.hubspot.com',w:'إدارة العملاء والصفقات ومراحل البيع',l:[7],c:'أداة CRM مجانية.'},
+ {n:'Excel',u:'',w:'تجهيز قائمة العملاء الوهميين واستيرادها إلى HubSpot',l:[7],c:'مثبّت على الحاسوب أو Google Sheets.'},
+ {n:'Odoo',u:'https://www.odoo.com',w:'نظام ERP: مبيعات ومخزون وفواتير',l:[11],c:'تجربة مجانية بتطبيق واحد، وشروطها تتغير. البدائل: Zoho Inventory أو ERPNext.'},
+ {n:'Trello',u:'https://trello.com',w:'لوحة Kanban وتوزيع المهام على الفريق',l:[3],c:'خطة مجانية.'},
+ {n:'Google Sheets',u:'https://sheets.google.com',w:'قاعدة بيانات الطلبات ومعادلات التحليل',l:[5,9,10],c:'مجاني.'},
+ {n:'Looker Studio',u:'https://lookerstudio.google.com',w:'لوحة مؤشرات الأداء KPIs',l:[9],c:'مجاني.'},
+ {n:'Google Analytics',u:'https://analytics.google.com',w:'تحليل زوار الموقع عبر الحساب التجريبي',l:[8],c:'مجاني.'},
+ {n:'ChatGPT أو Gemini أو Claude',u:'https://gemini.google.com',w:'هندسة الأوامر وخطة التسويق وتحليل المنافسين',l:[4,12],c:'يكفي حساب مجاني في أحدها.'},
+ {n:'Make',u:'https://www.make.com',w:'أتمتة المهام بين Sheets وGmail',l:[10],c:'خطة مجانية بحد شهري للعمليات. البديل: Zapier.'},
+ {n:'Gmail',u:'https://mail.google.com',w:'استقبال رسائل الأتمتة وإنشاء الحسابات',l:[6,10],c:'مجاني.'},
+ {n:'Google Docs',u:'https://docs.google.com',w:'ملف الروابط للمشروع الختامي',l:[4,12],c:'مجاني.'}
 ];
 
 
@@ -560,6 +561,7 @@ var IC={
  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
  moon:'<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>',
  download:'<path d="M12 3v12M7 11l5 5 5-5M4 20h16"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
  eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
  textsize:'<path d="M3 19l5-13 5 13M5 14h6M15 19l3.5-8 3.5 8M16.3 16.5h4.4"/>',
  next:'<path d="M15 5l-7 7 7 7"/>',
@@ -582,6 +584,22 @@ var IC={
  l12:'<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/>'
 };
 function svg(name,cls){var s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('aria-hidden','true');if(cls)s.setAttribute('class',cls);s.innerHTML=IC[name];return s}
+
+var LEVELS=['سهل جدًا','سهل جدًا','سهل','سهل','سهل','متوسط','متوسط','متوسط','متوسط','صعب','صعب','الأصعب'];
+var INFO={
+1:{w:'Canva برنامج تصميم يعمل من المتصفح. ترسم به نموذج عمل شركتك على لوحة واحدة.',b:'تتعلم كيف تلخّص فكرة المشروع: من العميل، وماذا تبيع، ومن أين الربح. هذا أساس أي خطة عمل.'},
+2:{w:'Google Sites يبني موقعًا للشركة بالسحب والإفلات دون كتابة كود.',b:'يصير للشركة وجه على الإنترنت. تتعلم عرض الخدمات وبناء ثقة العميل.'},
+3:{w:'Trello لوحة مهام على شكل بطاقات تنتقل بين أعمدة: للعمل، قيد التنفيذ، منجز.',b:'تتعلم إدارة المشاريع وتوزيع المهام ومتابعة الفريق، وهي مهارة مطلوبة في كل وظيفة إدارية.'},
+4:{w:'مساعد ذكاء اصطناعي مثل ChatGPT أو Gemini أو Claude. تتعلم كتابة الأوامر بطريقة تعطي نتائج دقيقة.',b:'توفّر وقتك في كتابة التقارير والخطط وتحليل الأفكار، وتجيب بسرعة عن أسئلة العمل.'},
+5:{w:'Google Forms يجمع بيانات العملاء، وGoogle Sheets يحفظها ويحسبها.',b:'تتعلم تنظيم البيانات وبناء قاعدة طلبات بسيطة. كل تحليل لاحق يبدأ من هنا.'},
+6:{w:'Ecwid يحوّل موقعك إلى متجر إلكتروني فيه منتجات وسلة وطلبات.',b:'تتعلم كيف تُباع المنتجات على الإنترنت: التسعير، عرض المنتج، ومتابعة الطلب حتى التسليم.'},
+7:{w:'HubSpot CRM يحفظ بيانات العملاء ويتتبع كل صفقة من أول تواصل حتى البيع.',b:'تتعلم إدارة علاقات العملاء. هي أساس المبيعات والتسويق في الشركات الحديثة.'},
+8:{w:'Google Analytics يقيس من زار موقعك، ومن أين جاء، وماذا فعل داخله.',b:'تتعلم قراءة الأرقام لتعرف أي حملة تسويقية تنجح، وتبني قراراتك على بيانات لا على التخمين.'},
+9:{w:'Looker Studio يحوّل بياناتك إلى لوحة مؤشرات KPIs بالرسوم والأرقام.',b:'تتعلم عرض نتائج الشركة للمدير بصورة واضحة. المؤشرات لغة الإدارة اليوم.'},
+10:{w:'Make يربط برامجك ببعضها فتعمل المهام المتكررة تلقائيًا دون تدخلك.',b:'تتعلم أتمتة الأعمال: مثلًا طلب جديد يصل، فيُسجَّل ويُرسل للعميل إشعار. توفّر ساعات من العمل اليدوي.'},
+11:{w:'Odoo نظام ERP يجمع المبيعات والمخزون والمحاسبة والمشتريات في مكان واحد.',b:'تتعلم كيف تُدار الشركة الكبيرة كلها بنظام واحد. هذا الفهم يميّز خريج إدارة الأعمال.'},
+12:{w:'مشروع يجمع كل ما تعلمته: شركة رقمية كاملة من الفكرة إلى المتجر والبيانات والأتمتة.',b:'تثبت أنك تستطيع بناء شركة رقمية بنفسك، وتخرج بملف عملي تعرضه في سيرتك الذاتية.'}};
+function labBadge(l,col,big){return badge('l'+(l.ic||l.id),col,big)}
 function labColor(id){return 'var(--c'+((id-1)%6+1)+')'}
 function badge(name,color,big){var b=document.createElement('span');b.className='badge'+(big?' big':'');b.style.setProperty('--c',color);b.appendChild(svg(name));return b}
 function starsEl(n,total){var s=document.createElement('span');s.className='stars';s.setAttribute('aria-label',n+' من '+total+' نجوم');for(var i=0;i<total;i++)s.appendChild(svg('star',i<n?'on':''));return s}
@@ -669,12 +687,18 @@ function home(){
   app.appendChild(h('h2',{class:'sec-title',text:'المختبرات'}));
   var g=h('div',{class:'grid'});
   LABS.forEach(function(l){var r=labPct(l);
+    var wrap=h('div',{class:'lab-wrap'});
     var c=h('a',{class:'lab-card',style:'--c:'+labColor(l.id),href:'#lab-'+l.id});
-    var top=h('div',{class:'lab-top'});top.appendChild(badge('l'+l.id,labColor(l.id)));top.appendChild(h('div',{class:'n',text:String(l.id)}));
-    c.appendChild(top);c.appendChild(h('h3',{text:l.title}));
+    var top=h('div',{class:'lab-top'});top.appendChild(labBadge(l,labColor(l.id)));top.appendChild(h('div',{class:'n',text:String(l.id)}));
+    c.appendChild(top);c.appendChild(h('h3',{text:l.title}));c.appendChild(h('div',{class:'lvl lvl'+Math.min(4,Math.ceil(l.id/3)),text:'المستوى: '+LEVELS[l.id-1]}));
     c.appendChild(h('div',{class:'meta'},h('span',{class:'tag',text:l.tool}),h('span',{text:l.min+' دقيقة'})));
     var row=h('div',{class:'prog',style:'margin:0'});row.appendChild(starsEl(labStarCount(l),3));row.appendChild(h('div',{class:'bar'},h('i',{style:'width:'+r.p+'%'})));c.appendChild(row);
-    g.appendChild(c)});
+    wrap.appendChild(c);
+    var pn=h('div',{class:'info-panel',style:'--c:'+labColor(l.id)},h('div',{},h('b',{text:'ما هو؟ '}),document.createTextNode(INFO[l.id].w)),h('div',{style:'margin-top:6px'},h('b',{text:'فائدته لك: '}),document.createTextNode(INFO[l.id].b)));
+    pn.hidden=true;
+    var ib2=h('button',{class:'info-btn',type:'button','aria-expanded':'false','aria-label':'نبذة عن '+l.tool,title:'نبذة عن البرنامج'});ib2.appendChild(svg('info'));ib2.appendChild(document.createTextNode(' نبذة'));
+    ib2.addEventListener('click',function(){pn.hidden=!pn.hidden;ib2.setAttribute('aria-expanded',String(!pn.hidden))});
+    wrap.appendChild(ib2);wrap.appendChild(pn);g.appendChild(wrap)});
   app.appendChild(g);
   var vc=h('div',{class:'vcard'},h('span',{class:'vc-ic'}),h('div',{},h('div',{class:'vc-num',text:VN||'…'}),h('div',{class:'vc-lbl',text:VL||'عدد الزيارات'})));
   vc.firstChild.appendChild(svg('eye'));app.appendChild(vc);
@@ -703,7 +727,7 @@ function lab(id){
   var r=labPct(l);
   app.appendChild(crumbs('المختبر '+l.id));
   var ban=h('div',{class:'lab-banner',style:'--c:'+labColor(l.id)});
-  ban.appendChild(badge('l'+l.id,labColor(l.id),true));
+  ban.appendChild(labBadge(l,labColor(l.id),true));
   ban.appendChild(h('div',{},h('h1',{text:l.id+'. '+l.title}),h('div',{class:'meta'},h('span',{class:'tag',text:l.tool}),h('span',{text:l.min+' دقيقة'}))));
   var sh=h('span',{id:'labStars',class:'stars-holder',style:'margin-inline-start:auto'});sh.appendChild(starsEl(labStarCount(l),3));ban.appendChild(sh);
   app.appendChild(ban);
@@ -755,7 +779,7 @@ function tools(){
   TOOLS.forEach(function(t,ti){
     var col='var(--c'+(ti%6+1)+')';
     var card=h('div',{class:'lab-card tool-card',style:'--c:'+col});
-    var top=h('div',{class:'lab-top'});top.appendChild(badge('l'+t.l[0],col));top.appendChild(h('h3',{class:'ltr-name',text:t.n}));
+    var top=h('div',{class:'lab-top'});top.appendChild(badge('l'+(LABS.filter(function(x){return x.id===t.l[0]})[0].ic),col));top.appendChild(h('h3',{class:'ltr-name',text:t.n}));
     card.appendChild(top);
     card.appendChild(h('div',{text:t.w}));
     card.appendChild(h('div',{style:'color:var(--muted);font-size:15px',text:t.c}));
