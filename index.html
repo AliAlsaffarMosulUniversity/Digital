@@ -626,13 +626,8 @@ function crumbs(label){return h('div',{class:'crumbs'},ibtn('home','الرئيس
   hd.appendChild(h('a',{class:'brand',href:'#'},h('span',{class:'dot'}),'مختبر الأعمال الرقمية'));
   var g=h('div',{class:'hgroup'});
   g.appendChild(ibtn('download','تثبيت التطبيق',{id:'installBtn'}));
-  g.appendChild(ibtn('textsize','حجم الخط',{id:'sizeBtn'}));
   g.appendChild(ibtn('moon','الوضع الليلي',{id:'themeBtn'}));
   hd.appendChild(g)})();
-var FS=[1,1.15,1.3],fsI=0;try{fsI=parseInt(localStorage.getItem('dbm-fs')||'0',10)||0}catch(e){}
-function applyFs(){document.documentElement.style.setProperty('--fs',FS[fsI]||1)}
-applyFs();
-document.getElementById('sizeBtn').addEventListener('click',function(){fsI=(fsI+1)%FS.length;try{localStorage.setItem('dbm-fs',String(fsI))}catch(e){}applyFs()});
 var app=document.getElementById('app'), VT='';
 function setVisits(){document.querySelectorAll('.visits-text').forEach(function(e){e.textContent=VT})}
 
