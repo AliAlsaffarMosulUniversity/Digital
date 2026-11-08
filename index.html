@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مختبر الأعمال الرقمية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Readex+Pro:wght@300;400;500;600&family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a lab notebook. One company is built lab by lab along a path of 12 nodes; each lab is a numbered checklist sheet. */
+:root{
+  --bg:#EAF6FB; --card:#FFFFFF; --ink:#1F2A44; --muted:#5A6A86; --line:#CFE3EE;
+  --accent:#1B78B8; --accent-ink:#FFFFFF; --mark:#FFD84D; --ok:#22A06B; --warn:#E5693A; --code:#EEF5FA;
+  --c1:#1B9AD6; --c2:#22B58A; --c3:#FF8A5B; --c4:#9A6BFF; --c5:#FF6F91; --c6:#F2B705;
+  --display:'Baloo Bhaijaan 2','Readex Pro',system-ui,sans-serif;
+  --body:'Readex Pro',system-ui,'Segoe UI',Tahoma,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#101A2E; --card:#182540; --ink:#EAF1FF; --muted:#A3B4D4; --line:#2B3C5E;
+    --accent:#5CC0F2; --accent-ink:#06223A; --mark:#FFD84D; --ok:#5FD6A0; --warn:#FF9A70; --code:#0E1730;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101A2E; --card:#182540; --ink:#EAF1FF; --muted:#A3B4D4; --line:#2B3C5E;
+  --accent:#5CC0F2; --accent-ink:#06223A; --mark:#FFD84D; --ok:#5FD6A0; --warn:#FF9A70; --code:#0E1730;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.85;font-weight:400}
+a{color:var(--accent)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+header.top{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:5}
+header.top .wrap{display:flex;align-items:center;gap:12px;min-height:56px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:20px;text-decoration:none;color:var(--ink);margin-inline-end:auto}
+.brand b{color:var(--accent)}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 14px;font-weight:500;text-decoration:none;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.small{padding:3px 10px;font-size:14px}
+h1,h2,h3{font-family:var(--display);line-height:1.35;text-wrap:balance;margin:0}
+/* hero */
+.hero{padding:34px 0 18px}
+.hero h1{font-size:clamp(30px,6vw,50px);font-weight:700}
+.hero h1 em{font-style:normal;background:linear-gradient(transparent 58%,var(--mark) 58%);padding:0 6px;border-radius:6px}
+.hero p{max-width:60ch;color:var(--muted);margin:12px 0 0}
+.path{display:flex;align-items:center;margin:26px 0 8px;overflow-x:auto;padding:6px 2px 14px}
+.node{flex:none;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:var(--card);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px;text-decoration:none;color:var(--ink);position:relative}
+.node.part{border-color:var(--accent)}
+.node.full{background:var(--ok);border-color:var(--ok);color:#fff}
+.link{flex:1 0 12px;height:2px;background:var(--line);min-width:12px}
+.overall{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:15px}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;flex:1;min-width:120px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--c1),var(--c2));width:0;transition:width .3s}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin:22px 0 40px}
+.lab-card{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--c,var(--accent));border-radius:16px;padding:16px;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:8px}
+.lab-card:hover{border-color:var(--accent)}
+.lab-card .n{font-family:var(--display);font-size:40px;font-weight:800;color:var(--c,var(--accent));line-height:1}
+.lab-card h3{font-size:19px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.tag{border:1px solid var(--line);border-radius:999px;padding:0 10px;direction:ltr;unicode-bidi:isolate}
+/* lab page */
+.lab-head{padding:26px 0 8px}
+.crumbs{font-size:14px;color:var(--muted)}
+.lab-head h1{font-size:clamp(26px,5vw,40px);margin:6px 0 10px}
+.lab-head .num{font-family:var(--display);color:var(--accent)}
+.box{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 0 var(--line);padding:16px 18px;margin:16px 0}
+.box.theory{border-inline-start:5px solid var(--mark)}
+.box h2{font-size:21px;margin-bottom:8px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+.chk:first-of-type{border-top:0}
+.chk input{appearance:none;flex:none;width:24px;height:24px;margin:3px 0 0;border:2px solid var(--muted);border-radius:6px;background:var(--bg);cursor:pointer;display:grid;place-items:center}
+.chk input:checked{background:var(--ok);border-color:var(--ok)}
+.chk input:checked::after{content:"";width:11px;height:6px;border:solid #fff;border-width:0 0 3px 3px;transform:rotate(-45deg) translate(1px,-1px)}
+.chk .body{flex:1;min-width:0}
+.chk.done .txt{color:var(--muted)}
+.chk .sn{font-family:var(--display);font-weight:700;color:var(--accent);margin-inline-end:6px}
+.ui{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+.chip{direction:ltr;unicode-bidi:isolate;font-family:var(--mono);font-size:15px;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:0 10px;line-height:1.7}
+.sep{color:var(--muted);font-size:14px}
+.code{margin-top:8px;direction:ltr;text-align:left;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-family:var(--mono);font-size:14.5px;white-space:pre-wrap;word-break:break-word;position:relative}
+.copy{position:absolute;top:6px;right:6px;font-family:var(--body);font-size:13px;padding:1px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+.code.has{padding-right:70px}
+.err li{margin-bottom:6px}
+.ltr-name{direction:ltr;text-align:right;unicode-bidi:plaintext}
+.err{padding-inline-start:20px;margin:0}
+details.box summary{cursor:pointer;font-family:var(--display);font-size:21px;font-weight:700}
+.prog{display:flex;align-items:center;gap:12px;margin:10px 0}
+.pager{display:flex;justify-content:space-between;gap:10px;margin:26px 0 50px;flex-wrap:wrap}
+footer{border-top:1px solid var(--line);padding:18px 0 32px;color:var(--muted);font-size:14px}
+/* focus mode */
+.focus{position:fixed;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column;overflow:auto}
+.focus .bar-top{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.focus .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 18px}
+.focus .slide{max-width:860px;width:100%}
+.focus .k{font-family:var(--display);color:var(--accent);font-size:20px}
+.focus .big{font-size:clamp(26px,4.6vw,44px);line-height:1.55;font-weight:500;margin:6px 0 14px}
+.focus .chip{font-size:clamp(18px,3vw,28px);padding:2px 16px}
+.focus .code{font-size:clamp(15px,2.4vw,22px)}
+.focus .nav{display:flex;gap:10px;padding:14px 18px;border-top:1px solid var(--line);justify-content:space-between;flex-wrap:wrap}
+@media (max-width:480px){body{font-size:16px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#" id="brand">مختبر الأعمال <b>الرقمية</b></a>
+  <a class="btn small" href="#tools">البرامج</a>
+  <button class="btn small" id="resetBtn" type="button">مسح تقدّمي</button>
+</div></header>
+<main class="wrap" id="app"></main>
+<footer><div class="wrap">إعداد م.م. علي عبد الوهاب الصفار، كلية الإدارة والاقتصاد، جامعة الموصل. واجهات الأدوات تتغير، فإن اختلف اسم زر فابحث عن أقرب اسم له.</div></footer>
+<div id="focusRoot"></div>
+
+<script>
+/* ---------- data ---------- */
+var S=function(t,ui,code){return{t:t,ui:ui||[],code:code||''}};
+var LABS=[
+{id:1,title:'نموذج العمل الرقمي',tool:'Canva',url:'https://www.canva.com',min:90,
+ link:'نموذج العمل هو مخطط هندسة النظام للشركة. كما ترسم معمارية برنامج قبل كتابته، ترسم نموذج العمل قبل إطلاق الشركة.',
+ goal:'تصميم نموذج عمل من 9 مربعات لشركة رقمية جديدة.',
+ prep:['الطلاب في فرق من 2 إلى 3.','كل فريق يختار فكرة شركة رقمية: توصيل طعام، متجر ملابس، دروس خصوصية أونلاين، صيانة حواسيب.'],
+ steps:[
+  S('افتح الموقع وسجّل الدخول بحساب Google.',['canva.com']),
+  S('اضغط زر الإنشاء.',['Create']),
+  S('اختر اللوح.',['Whiteboard']),
+  S('اكتب في خانة البحث:',['Business Model Canvas']),
+  S('اختر قالبًا مجانيًا ثم اضغط:',['Customize this template']),
+  S('سمِّ الملف باسم شركتك.'),
+  S('املأ المربع الأول. من هو عميلنا؟ اكتب فئة واضحة، مثل طلبة جامعة الموصل.',['Customer Segments']),
+  S('املأ المربع الثاني. ما المشكلة التي نحلها؟ اكتب جملة واحدة.',['Value Propositions']),
+  S('املأ المربع الثالث. كيف نصل إلى العميل؟ مثل إنستغرام أو تلغرام أو موقع.',['Channels']),
+  S('املأ المربع الرابع. كيف نحافظ على العميل؟ مثل دعم واتساب وخصومات.',['Customer Relationships']),
+  S('املأ المربع الخامس. من أين يأتي الدخل؟ مبيعات أو اشتراك أو عمولة.',['Revenue Streams']),
+  S('املأ المربع السادس. ما الموارد المهمة؟ موقع وتطبيق وفريق.',['Key Resources']),
+  S('املأ المربع السابع. ما الأنشطة اليومية؟',['Key Activities']),
+  S('املأ المربع الثامن. من شركاؤنا؟ شركة توصيل أو بوابة دفع.',['Key Partners']),
+  S('املأ المربع التاسع. ما تكاليفنا؟ استضافة وإعلانات ورواتب.',['Cost Structure']),
+  S('أضف لكل مربع ملاحظة تشرح ما الجزء الرقمي فيه.'),
+  S('شارك الملف مع المدرّس:',['Share','Anyone with the link can view'])],
+ out:'رابط الملف مع اسم الشركة وأسماء الفريق.',
+ ok:['المربعات التسعة ممتلئة.','كل مربع يذكر شيئًا رقميًا محددًا.','القيمة المقدّمة مكتوبة بجملة واحدة واضحة.'],
+ err:['عميل عام جدًا مثل "كل الناس". الحل: اختر فئة واحدة محددة.','خلط التكاليف بالموارد. التكاليف ما تدفعه. الموارد ما تملكه.']},
+
+{id:2,title:'موقع الشركة',tool:'Google Sites',url:'https://sites.google.com',min:90,
+ link:'الموقع هو الواجهة الأمامية للشركة. فيه يرى العميل القيمة التي كتبتها في المختبر الأول.',
+ goal:'بناء موقع من 4 صفحات بلا كتابة كود.',
+ prep:['نموذج العمل من المختبر 1 جاهز.','شعار بسيط من Canva إن أمكن.'],
+ steps:[
+  S('افتح الموقع واختر القالب الفارغ.',['sites.google.com','Blank site']),
+  S('اكتب اسم الموقع في الأعلى، وهو اسم الشركة.'),
+  S('اكتب عنوان الصفحة الرئيسية في الحقل الكبير.',['Enter page title']),
+  S('أضف الشعار أو صورة رئيسية.',['Insert','Image']),
+  S('أضف مربع نص يشرح القيمة التي تقدمها شركتك.',['Text box']),
+  S('أنشئ ثلاث صفحات: من نحن، خدماتنا، تواصل معنا.',['Pages','+']),
+  S('في صفحة التواصل أدرج نموذجًا. أنشئه أولًا في Google Forms بحقلين: الاسم والرسالة.',['Insert','Forms']),
+  S('غيّر المظهر واختر ألوانًا تناسب هوية الشركة.',['Themes']),
+  S('عاين الموقع وتأكد أنه يعمل على شاشة الهاتف.',['Preview']),
+  S('انشر الموقع، واكتب اسمًا إنجليزيًا قصيرًا للرابط بلا مسافات.',['Publish'])],
+ out:'رابط الموقع المنشور.',
+ ok:['الموقع يفتح من هاتف زميل بالرابط.','أربع صفحات تعمل من القائمة.','النموذج يسجّل ردودًا فعلية. أرسل ردًا تجريبيًا.'],
+ err:['نسيان النشر، فيظهر الرابط "غير متاح". الحل: اضغط Publish.','نموذج التواصل غير مشارَك. الحل: اجعل النموذج متاحًا لأي شخص لديه الرابط.']},
+
+{id:3,title:'المتجر الإلكتروني',tool:'Ecwid',url:'https://www.ecwid.com',min:120,
+ link:'التجارة الإلكترونية تحوّل الموقع من صفحة عرض إلى نظام بيع. فيه قاعدة منتجات وسلة شراء وطلبات.',
+ goal:'إضافة 5 منتجات وإعداد الشحن والدفع وإجراء طلب تجريبي.',
+ prep:['صور وأسماء وأسعار ووصف قصير لخمسة منتجات.','تحقق من شروط الخطة المجانية قبل الدرس. لا تُدخل بطاقة بنكية في أي أداة.','بديل: Shopify بنسخة تجريبية، وقد تطلب بطاقة، فلا تستخدمه مع الطلاب.'],
+ steps:[
+  S('أنشئ حسابًا في المنصة ببريد Gmail.'),
+  S('أنشئ متجرًا جديدًا وسمِّه باسم الشركة.'),
+  S('اختر العملة. الدولار أو الدينار العراقي إن توفر.',['Currency']),
+  S('أضف أول منتج.',['Catalog','Products','Add product']),
+  S('أدخل الاسم والسعر والوصف والصورة.'),
+  S('كرّر الخطوة للمنتجات الخمسة.'),
+  S('أنشئ تصنيفين على الأقل.',['Categories']),
+  S('أعدّ الشحن بسعر ثابت، وحدد مدينة الموصل.',['Shipping','Flat rate']),
+  S('أعدّ الدفع عند الاستلام إن توفر. لا تضع بيانات بنكية حقيقية.',['Payment','Cash on delivery']),
+  S('افتح متجرك كعميل وأجرِ طلبًا تجريبيًا كاملًا.'),
+  S('ارجع للوحة التحكم وتأكد أن الطلب ظهر.',['Orders']),
+  S('أضف المتجر إلى صفحة في موقع المختبر 2.',['Embed'])],
+ out:'رابط المتجر + لقطة شاشة لصفحة الطلبات تُظهر طلبًا واحدًا.',
+ ok:['5 منتجات بصور وأسعار.','الشحن والدفع مضبوطان.','طلب تجريبي مسجّل.'],
+ err:['نسيان وضع التجربة. تأكد أن المتجر لا يقبل دفعًا حقيقيًا.','صور كبيرة جدًا تبطئ المتجر. اضغطها قبل الرفع.']},
+
+{id:4,title:'إدارة العملاء CRM',tool:'HubSpot CRM',url:'https://www.hubspot.com',min:90,
+ link:'نظام CRM قاعدة بيانات للعملاء: جداول للأشخاص والشركات والصفقات. والصفقة تمر بمراحل كأنها حالة تتغير.',
+ goal:'إدخال عملاء وإنشاء صفقات وتحريكها عبر مراحل البيع.',
+ prep:['قائمة 8 عملاء وهميين: اسم وبريد وهاتف وشركة. أسماء وهمية فقط.'],
+ steps:[
+  S('افتح الموقع وابدأ مجانًا.',['hubspot.com','Get started free']),
+  S('سجّل بحساب Google واختر اسم شركتك.'),
+  S('اختر أداة CRM المجانية.',['Free CRM']),
+  S('أنشئ عميلًا واحدًا يدويًا.',['Contacts','Create contact']),
+  S('استورد الباقي من ملف Excel.',['Import']),
+  S('أنشئ شركتين واربط العملاء بهما.',['Companies']),
+  S('أنشئ 4 صفقات بمبالغ مختلفة.',['Deals','Create deal']),
+  S('حرّك كل صفقة بين المراحل بالسحب.',['Appointment scheduled','Qualified to buy','Closed won']),
+  S('سجّل مكالمة وهمية مع عميل.',['Log activity']),
+  S('أنشئ مهمة متابعة بتاريخ.',['Create task']),
+  S('افتح التقارير ولاحظ مجموع قيمة الصفقات.',['Reports'])],
+ out:'لقطة شاشة للوحة الصفقات تظهر 4 صفقات في مراحل مختلفة.',
+ ok:['8 عملاء مسجّلون مع شركاتهم.','4 صفقات في مراحل مختلفة.','نشاط واحد ومهمة واحدة مسجّلان.'],
+ err:['إدخال أرقام هواتف حقيقية. استخدم بيانات وهمية فقط.','إنشاء صفقة قبل العميل. الترتيب: عميل ثم شركة ثم صفقة.']},
+
+{id:5,title:'نظام ERP',tool:'Odoo',url:'https://www.odoo.com',min:120,
+ link:'نظام ERP قاعدة بيانات واحدة تشترك فيها كل الأقسام. عند بيع منتج ينقص المخزون وتُسجَّل فاتورة وتتغير المحاسبة تلقائيًا، كأنها Transaction واحدة تحدّث أكثر من جدول.',
+ goal:'تنفيذ دورة مستندية كاملة: منتج، أمر بيع، تسليم، فاتورة، دفع.',
+ prep:['المنتجات الخمسة من المختبر 3.','شروط الخطة المجانية تتغير. تحقق قبل الدرس. البدائل: Zoho Inventory أو ERPNext.'],
+ steps:[
+  S('افتح الموقع وجرّب مجانًا.',['odoo.com','Try it free']),
+  S('ابدأ بتطبيق واحد فقط، ثم أضف الباقي لاحقًا.',['Sales','Inventory','Invoicing']),
+  S('أنشئ حسابًا وانتظر تجهيز قاعدة البيانات.'),
+  S('أضف المنتجات بالاسم والسعر والكلفة.',['Sales','Products','New']),
+  S('أدخل كمية مخزون 10 وحدات لكل منتج.',['Update Quantity']),
+  S('أنشئ عميلًا.',['Customers','New']),
+  S('أنشئ عرض سعر لمنتجين بكميات.',['Quotations','New']),
+  S('أكّد الطلب.',['Confirm']),
+  S('سلّم البضاعة من المخزن.',['Delivery','Validate']),
+  S('ارجع لمخزون المنتج. لاحظ أن الكمية نقصت تلقائيًا. هذا هو التكامل.'),
+  S('أنشئ الفاتورة ثم أكّدها.',['Create Invoice','Confirm']),
+  S('سجّل دفعة العميل.',['Register Payment'])],
+ out:'3 لقطات شاشة: أمر البيع، المخزون بعد التسليم، الفاتورة المدفوعة.',
+ ok:['الدورة كاملة من عرض السعر إلى الدفع.','المخزون انخفض بمقدار الكمية المباعة.','الطالب يشرح لماذا تحدّث المخزون دون إدخال يدوي.'],
+ err:['اختيار تطبيقات كثيرة دفعة واحدة. ابدأ بتطبيق واحد.','نسيان الضغط على Validate فلا ينقص المخزون.']},
+
+{id:6,title:'إدارة المشروع Kanban',tool:'Trello',url:'https://trello.com',min:90,
+ link:'أسلوب Kanban يعرض العمل في أعمدة حسب الحالة، وهو نفس فكرة متابعة Issues في مشاريع البرمجة. المهمة تنتقل بين حالات محددة.',
+ goal:'تقسيم مشروع إطلاق الشركة إلى مهام وتوزيعها على الفريق.',
+ prep:['كل فريق يكتب 12 مهمة لإطلاق شركته، مثل تصميم الشعار وتصوير المنتجات وكتابة وصف الموقع.'],
+ steps:[
+  S('سجّل الدخول بحساب Google.',['trello.com']),
+  S('أنشئ لوحة جديدة باسم "إطلاق شركة" ثم اسم شركتك.',['Create board']),
+  S('أنشئ 4 قوائم بهذا الترتيب.',['To Do','Doing','Review','Done']),
+  S('أضف بطاقات المهام الاثنتي عشرة في عمود To Do.',['Add a card']),
+  S('افتح كل بطاقة وأضف وصفًا وتاريخ استحقاق وقائمة مهام فرعية.',['Description','Due date','Checklist']),
+  S('ادعُ أعضاء الفريق بالبريد.',['Share']),
+  S('وزّع كل مهمة على عضو.',['Members']),
+  S('أضف ألوانًا للأولوية: أحمر عاجل، أصفر متوسط، أخضر عادي.',['Labels']),
+  S('اسحب 3 بطاقات إلى Doing وبطاقتين إلى Done.'),
+  S('حدد حدًا أقصى للمهام الجارية: مهمتان لكل عضو. هذا هو WIP Limit.')],
+ out:'رابط اللوحة + لقطة شاشة تظهر توزيع البطاقات على الأعمدة.',
+ ok:['12 بطاقة بمواعيد ومسؤولين.','توزيع منطقي للمهام على الأعمدة.','لكل عضو مهمة واحدة على الأقل.'],
+ err:['مهام كبيرة جدًا تبقى في Doing. قسّمها إلى مهام أصغر.','مهام بلا مسؤول. لكل بطاقة شخص واحد.']},
+
+{id:7,title:'قاعدة بيانات الطلبات',tool:'Google Forms + Sheets',url:'https://forms.google.com',min:90,
+ link:'النموذج واجهة إدخال بيانات. والجدول قاعدة البيانات التي تستقبل كل إجابة كسجل جديد. هذا أساس لوحة المؤشرات في المختبر التالي.',
+ goal:'نموذج طلبات يكتب في جدول، مع معادلات بسيطة للتحليل.',
+ prep:['افتح الموقع:'],
+ steps:[
+  S('أنشئ نموذجًا فارغًا.',['forms.google.com','Blank form']),
+  S('اكتب العنوان: طلب شراء من اسم الشركة.'),
+  S('أضف الأسئلة بهذا الترتيب: الاسم (إجابة قصيرة)، الهاتف (إجابة قصيرة)، المنتج (قائمة منسدلة)، الكمية (إجابة قصيرة مع تحقق أنها رقم)، المحافظة (اختيار من متعدد).',['Short answer','Dropdown','Multiple choice']),
+  S('اجعل الأسئلة إجبارية.',['Required']),
+  S('اربط النموذج بجدول.',['Responses','Link to Sheets']),
+  S('اضغط الإرسال وانسخ الرابط.',['Send']),
+  S('املأ النموذج 15 مرة ببيانات وهمية. وزّعوا المملوء على أعضاء الفريق.'),
+  S('افتح الجدول. الأعمدة: A التاريخ، B الاسم، C الهاتف، D المنتج، E الكمية، F المحافظة. أنشئ ورقة جديدة اسمها Prices: اسم المنتج في العمود A وسعره في B.',['Prices']),
+  S('في الخلية G2 اكتب معادلة السعر الإجمالي، ثم اسحبها لأسفل.',[], '=E2*VLOOKUP(D2,Prices!A:B,2,FALSE)'),
+  S('احسب مجموع المبيعات في خلية منفصلة.',[], '=SUM(G2:G)'),
+  S('أنشئ مخططًا لعدد الطلبات لكل منتج.',['Insert','Chart'])],
+ out:'رابط النموذج + رابط الجدول مشارك مع المدرّس بصلاحية قراءة.',
+ ok:['15 طلبًا تظهر في الجدول.','عمود الإجمالي يحسب بشكل صحيح.','مخطط واحد على الأقل.'],
+ err:['اسم المنتج في Prices يختلف حرفًا عن خيار النموذج، فتظهر خطأ. انسخ الأسماء ولا تكتبها.','الفاصلة في المعادلة قد تكون فاصلة منقوطة حسب إعدادات الجهاز. جرّب الفاصلة المنقوطة إن ظهر خطأ.']},
+
+{id:8,title:'لوحة المؤشرات KPIs',tool:'Looker Studio',url:'https://lookerstudio.google.com',min:120,
+ link:'اللوحة تحوّل البيانات الخام إلى مؤشرات أداء يقرأها المدير بنظرة واحدة. هي استعلام على قاعدة بيانات مع عرض مرئي.',
+ goal:'ربط جدول المختبر 7 بلوحة تتحدّث تلقائيًا.',
+ prep:['جدول الطلبات من المختبر 7 فيه 15 طلبًا على الأقل.'],
+ steps:[
+  S('افتح الموقع بنفس حساب Google.',['lookerstudio.google.com']),
+  S('أنشئ تقريرًا جديدًا.',['Create','Report']),
+  S('اختر مصدر البيانات.',['Google Sheets']),
+  S('اختر جدول الطلبات والورقة الصحيحة ثم أضفها.',['Add']),
+  S('أضف بطاقة رقم لإجمالي المبيعات.',['Add a chart','Scorecard']),
+  S('أضف بطاقة لعدد الطلبات.',['Record Count']),
+  S('أضف مخططًا شريطيًا للمنتجات الأعلى مبيعًا. البعد المنتج والمقياس الكمية.',['Bar chart']),
+  S('أضف مخططًا دائريًا لتوزيع المحافظات.',['Pie chart']),
+  S('أضف مخططًا زمنيًا للمبيعات عبر الأيام.',['Time series chart']),
+  S('أضف فلترًا يختار منه المدير المنتج.',['Add a control','Drop-down list']),
+  S('أضف عنوانًا واسم الشركة ونظّم اللوحة.'),
+  S('أضف طلبًا جديدًا من النموذج، وانتظر دقائق، ثم أعد تحميل اللوحة لترى تغيّر الرقم.'),
+  S('شارك اللوحة.',['Share','Get report link'])],
+ out:'رابط اللوحة بأربعة مؤشرات وفلتر.',
+ ok:['اللوحة تقرأ من الجدول مباشرة.','الأرقام تتطابق مع الجدول.','الفلتر يغيّر العرض فعلًا.'],
+ err:['نوع الحقل نص بدل رقم. غيّر النوع في مصدر البيانات إلى Number.','الورقة الخاطئة مختارة. اختر ورقة إجابات النموذج.']},
+
+{id:9,title:'تحليل الويب',tool:'Google Analytics',url:'https://analytics.google.com',min:90,
+ link:'Analytics نظام Logging للموقع. يسجّل كل زيارة وكل نقرة كحدث، ثم تحلّل الأحداث لفهم سلوك المستخدم.',
+ goal:'قراءة تقارير الزوار واستخراج قرار إداري منها.',
+ prep:['مواقع الطلاب لن يزورها عدد كافٍ للتحليل، لذلك نستخدم حساب Google التجريبي الجاهز بمتجر حقيقي.','ابحث في Google عن:  Google Analytics demo account  وافتح الصفحة الرسمية وأضف الحساب التجريبي إلى حسابك.'],
+ steps:[
+  S('افتح الحساب التجريبي الذي أضفته.'),
+  S('افتح لقطة التقارير.',['Reports','Reports snapshot']),
+  S('اكتب في ورقة أربعة أرقام لآخر 28 يومًا.',['Users','New users','Average engagement time','Event count']),
+  S('افتح تقرير مصادر الزوار، واكتب أكثر 3 مصادر.',['Acquisition','Traffic acquisition']),
+  S('افتح تقرير الصفحات، واكتب أكثر صفحتين مشاهدة.',['Engagement','Pages and screens']),
+  S('افتح تقرير الجمهور، واكتب الدولة الأكثر زيارة.',['User','Demographics','Demographic details']),
+  S('افتح تقرير مشتريات التجارة إن وفّره الحساب.',['Monetization','Ecommerce purchases']),
+  S('اكتب ثلاث ملاحظات إدارية بجمل قصيرة. مثال: نركّز الإعلان على المصدر الأكثر زيارة.'),
+  S('اكتب توصية واحدة لمدير التسويق.')],
+ out:'ورقة من صفحة واحدة فيها الأرقام والملاحظات والتوصية.',
+ ok:['4 مؤشرات مكتوبة بشكل صحيح.','مصادر الزوار والصفحات مذكورة.','التوصية مبنية على رقم وليس على رأي شخصي.'],
+ err:['أرقام من نطاق زمني مختلف. ثبّت النطاق على آخر 28 يومًا لكل الطلاب.','أسماء القوائم تختلف قليلًا لأن Google تحدّث الواجهة. ابحث عن اسم التقرير في خانة البحث.']},
+
+{id:10,title:'الذكاء الاصطناعي وهندسة الأوامر',tool:'ChatGPT أو Gemini أو Claude',url:'https://gemini.google.com',min:90,
+ link:'الأمر Prompt هو مدخل النظام. مدخل منظّم يعطي مخرجات أفضل. وتحليل المنافسين والتخطيط التسويقي من أكثر ما يُنجز بهذه الأدوات.',
+ goal:'كتابة أمر منظّم من 5 أجزاء وتقييم مخرجات الذكاء الاصطناعي.',
+ prep:['حساب مجاني في أحد النماذج.','نموذج العمل من المختبر 1 جاهز.','القاعدة: الدور، السياق، المهمة، القيود، الشكل. اكتب أمرك بهذه الأجزاء الخمسة.'],
+ steps:[
+  S('افتح أداة الذكاء الاصطناعي التي اخترتها.'),
+  S('جرّب أمرًا ضعيفًا أولًا، واحفظ النتيجة.',[], 'Write a marketing plan'),
+  S('اكتب الأمر المنظّم. غيّر ما بين الأقواس إلى بيانات شركتك.',[], 'You are a digital marketing consultant. My company is [name], it sells [product] to [customers] in Mosul. Create a 30-day social media plan. Use a friendly tone, in Arabic, max 300 words. Format the answer as a table with columns: day, platform, post idea.'),
+  S('قارن النتيجتين، واكتب ما الذي تغيّر.'),
+  S('اطلب تحليل منافسين.',[], 'Analyze 3 competitors for [product] in Iraq. Compare price, channels, and weaknesses. Present as a table.'),
+  S('تحقق من معلومة واحدة على الأقل من مصدر آخر. الذكاء الاصطناعي يخطئ أحيانًا ويخترع أسماء شركات.'),
+  S('اطلب كتابة 3 منشورات إعلانية لشركتك.'),
+  S('اجمع في مستند واحد: الأمر الضعيف، الأمر الجيد، الخطة، المنشورات، وملاحظتك على دقة المعلومات.')],
+ out:'ملف واحد فيه مقارنة الأمر الضعيف بالجيد مع خطة التسويق.',
+ ok:['الأمر الجيد يحتوي الأجزاء الخمسة.','الطالب يشرح سبب تحسّن النتيجة.','الطالب ذكر معلومة تحقق منها.'],
+ err:['نسخ ناتج الذكاء الاصطناعي دون مراجعة. الطالب مسؤول عن صحة ما يسلّمه.','أمر قصير بلا سياق. استخدم الأجزاء الخمسة.']},
+
+{id:11,title:'أتمتة المهام',tool:'Make',url:'https://www.make.com',min:120,
+ link:'الأتمتة قاعدة منطقية: إذا حدث شيء (Trigger) فنفّذ إجراءً (Action). هي فكرة Event Listener في البرمجة، لكن بلا كود.',
+ goal:'سيناريو يرسل بريدًا تلقائيًا عند وصول طلب جديد في النموذج.',
+ prep:['نموذج الطلبات وجدوله من المختبر 7.','الخطة المجانية لها حد شهري للعمليات. تحقق منه. استخدم عمليات قليلة ولا تترك السيناريو شغّالًا بعد التجربة.'],
+ steps:[
+  S('أنشئ حسابًا مجانيًا ببريد Gmail.',['make.com']),
+  S('أنشئ سيناريو جديدًا.',['Create a new scenario']),
+  S('اضغط علامة + وابحث عن:',['Google Sheets']),
+  S('اختر الحدث (Trigger).',['Watch New Rows']),
+  S('اربط حساب Google، واختر جدول إجابات النموذج والورقة الصحيحة.'),
+  S('أضف وحدة ثانية بعد الأولى.',['Gmail']),
+  S('اختر الإجراء (Action).',['Send an Email']),
+  S('اكتب المستلم: بريدك أنت أولًا للتجربة. لا ترسل لأشخاص حقيقيين.'),
+  S('اكتب الموضوع والنص، وأدرج القيم القادمة من الوحدة الأولى: اسم العميل والمنتج والكمية.'),
+  S('شغّل السيناريو مرة واحدة.',['Run once']),
+  S('املأ النموذج بطلب جديد، وارجع للسيناريو وتأكد من وصول البريد.'),
+  S('أضف شرطًا بين الوحدتين: لا يُرسل بريد إلا إذا كانت الكمية أكبر من 5.',['Set up a filter']),
+  S('أوقف الجدولة بعد التجربة.',['Scheduling','OFF'])],
+ out:'لقطة شاشة للسيناريو بوحدتين + لقطة للبريد المستلم.',
+ ok:['البريد وصل بالقيم الصحيحة.','الطالب يشرح الـ Trigger والـ Action بجملتين.','الفلتر يعمل: طلب صغير لا يرسل بريدًا.'],
+ err:['السيناريو لا يلتقط الصفوف القديمة. هذا طبيعي. أضف طلبًا جديدًا.','نسيان إيقاف الجدولة فتستهلك الحصة المجانية.','بديل أبسط إن تعذّر Make: إشعارات النموذج المدمجة. Responses ثم Get email notifications for new responses.']},
+
+{id:12,title:'المشروع الختامي',tool:'كل الأدوات السابقة',url:'',min:240,
+ link:'هذا هو التكامل. كل أداة اشتغلت منفردة في المختبرات السابقة، والآن تعمل معًا كنظام رقمي واحد للشركة.',
+ goal:'تسليم النظام الرقمي الكامل للشركة وعرضه في 7 دقائق.',
+ prep:['العرض في محاضرتين: واحدة للتجميع وواحدة للعرض.','هيكل العرض: الشركة والعميل (دقيقة)، جولة على الموقع والمتجر وطلب تجريبي (دقيقتان)، حركة البيانات من الطلب إلى اللوحة (دقيقتان)، الأتمتة والذكاء الاصطناعي (دقيقة)، ما تعلمناه (دقيقة).'],
+ steps:[
+  S('ملف واحد يجمع روابط كل المختبرات.'),
+  S('نموذج العمل الرقمي (المختبر 1).'),
+  S('موقع الشركة ومتجرها يعملان.'),
+  S('قاعدة العملاء ودورة مستندية كاملة (CRM وERP).'),
+  S('لوحة مؤشرات حيّة.'),
+  S('تقرير تحليل ويب صغير.'),
+  S('خطة تسويق من الذكاء الاصطناعي مع ملاحظات التحقق.'),
+  S('أتمتة واحدة على الأقل تعمل.'),
+  S('عرض قصير من 7 دقائق يشرح كيف تترابط الأدوات.')],
+ out:'ملف الروابط + العرض.',
+ ok:['اكتمال المخرجات المطلوبة وعملها (15 درجة).','ترابط الأدوات، مثل النموذج الذي يغذّي اللوحة (10).','جودة العرض والإجابة عن الأسئلة (10).','توثيق مسؤولية كل عضو (5).'],
+ err:['أسئلة مقترحة للمناقشة: لماذا اخترتم هذا العميل؟ ما أهم مؤشر في لوحتكم؟ أين استخدمتم الذكاء الاصطناعي وكيف تحققتم من نتيجته؟ ماذا لو تضاعف عدد الطلبات فجأة؟','للمدرّس: اطلب مشاركة الملف بصلاحية تعليق. حدد موعدًا نهائيًا لكل مختبر. اطلب من كل عضو شرح خطوة من عمله أمامك.']}
+];
+
+/* ---------- state ---------- */
+var KEY='dbm-labs-v1', state={done:{}};
+function load(){try{var r=localStorage.getItem(KEY);if(r)state=JSON.parse(r)||{done:{}};if(!state.done)state.done={}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+load();
+function k(l,kind,i){return l.id+':'+kind+':'+i}
+function labItems(l){var a=[],i;for(i=0;i<l.prep.length;i++)a.push(k(l,'p',i));for(i=0;i<l.steps.length;i++)a.push(k(l,'s',i));for(i=0;i<l.ok.length;i++)a.push(k(l,'k',i));return a}
+function labPct(l){var it=labItems(l),d=0;it.forEach(function(x){if(state.done[x])d++});return {d:d,n:it.length,p:Math.round(100*d/it.length)}}
+function allPct(){var d=0,n=0;LABS.forEach(function(l){var r=labPct(l);d+=r.d;n+=r.n});return Math.round(100*d/n)}
+
+/* ---------- helpers ---------- */
+function h(tag,attrs){var e=document.createElement(tag),i,c;attrs=attrs||{};for(var a in attrs){if(a==='class')e.className=attrs[a];else if(a==='text')e.textContent=attrs[a];else if(a.slice(0,2)==='on')e.addEventListener(a.slice(2),attrs[a]);else e.setAttribute(a,attrs[a])}
+ for(i=2;i<arguments.length;i++){c=arguments[i];if(c==null)continue;e.appendChild(typeof c==='string'?document.createTextNode(c):c)}return e}
+function uiRow(list){var row=h('div',{class:'ui'});list.forEach(function(t,i){if(i)row.appendChild(h('span',{class:'sep',text:'‹'}));row.appendChild(h('span',{class:'chip',text:t}))});return row}
+function copyBtn(text,pre){
+  var b=h('button',{class:'copy',type:'button',text:'نسخ'});
+  b.addEventListener('click',function(){
+    var ok=false;
+    try{navigator.clipboard.writeText(text).then(function(){b.textContent='تم النسخ';setTimeout(function(){b.textContent='نسخ'},1400)},function(){sel()});ok=true}catch(e){}
+    if(!ok)sel();
+    function sel(){var r=document.createRange();r.selectNodeContents(pre);var s=window.getSelection();s.removeAllRanges();s.addRange(r);b.textContent='حدّد ثم Ctrl+C';setTimeout(function(){b.textContent='نسخ'},2200)}
+  });return b}
+function codeBox(text){var pre=h('div',{class:'code has'});var span=h('span',{text:text});pre.appendChild(span);pre.appendChild(copyBtn(text,span));return pre}
+
+/* ---------- views ---------- */
+var app=document.getElementById('app');
+function home(){
+  app.innerHTML='';
+  var pct=allPct();
+  var path=h('div',{class:'path'});
+  LABS.forEach(function(l,i){var r=labPct(l);if(i)path.appendChild(h('span',{class:'link'}));
+    path.appendChild(h('a',{class:'node '+(r.p===100?'full':r.p>0?'part':''),href:'#lab-'+l.id,'aria-label':'المختبر '+l.id,text:String(l.id)}))});
+  var bar=h('div',{class:'bar'},h('i',{style:'width:'+pct+'%'}));
+  app.appendChild(h('section',{class:'hero'},
+    h('h1',{},'اثنا عشر مختبرًا، ',h('em',{text:'شركة رقمية واحدة'})),
+    h('p',{text:'مادة إدارة الأعمال الرقمية، الجانب العملي. تبني في كل مختبر قطعة جديدة من الشركة: نموذج عمل، موقع، متجر، قاعدة عملاء، لوحة مؤشرات، أتمتة. اتبع الخطوات بالترتيب وعلّم ما أنجزته.'}),
+    path,
+    h('div',{class:'actions',style:'margin:0 0 10px'},h('a',{class:'btn primary',href:'#tools',text:'كل البرامج التي سنتعلمها (15)'})),
+    h('div',{class:'overall'},h('span',{text:'تقدّمك الكلي'}),bar,h('strong',{text:pct+'%'}))));
+  var g=h('div',{class:'grid'});
+  LABS.forEach(function(l){var r=labPct(l);
+    g.appendChild(h('a',{class:'lab-card',style:'--c:var(--c'+((l.id-1)%6+1)+')',href:'#lab-'+l.id},
+      h('div',{class:'n',text:String(l.id)}),
+      h('h3',{text:l.title}),
+      h('div',{class:'meta'},h('span',{class:'tag',text:l.tool}),h('span',{text:l.min+' دقيقة'}),h('span',{text:r.d+' من '+r.n})),
+      h('div',{class:'bar'},h('i',{style:'width:'+r.p+'%'}))))});
+  app.appendChild(g);
+  document.title='مختبر الأعمال الرقمية';
+}
+
+function checkRow(l,kind,i,node,extra){
+  var key=k(l,kind,i);
+  var cb=h('input',{type:'checkbox',id:'c-'+key.replace(/:/g,'-')});
+  cb.checked=!!state.done[key];
+  var row=h('div',{class:'chk'+(cb.checked?' done':'')});
+  cb.addEventListener('change',function(){if(cb.checked)state.done[key]=1;else delete state.done[key];save();row.classList.toggle('done',cb.checked);refreshProg(l)});
+  row.appendChild(cb);row.appendChild(node);return row}
+
+function refreshProg(l){var r=labPct(l);var p=document.getElementById('labProg');if(p){p.querySelector('i').style.width=r.p+'%';p.querySelector('strong').textContent=r.d+' من '+r.n}}
+
+function lab(id){
+  var l=LABS.filter(function(x){return x.id===id})[0];
+  if(!l){location.hash='';return}
+  app.innerHTML='';
+  var r=labPct(l);
+  app.appendChild(h('div',{class:'lab-head'},
+    h('div',{class:'crumbs'},h('a',{href:'#',text:'كل المختبرات'}),' › المختبر '+l.id),
+    h('h1',{},h('span',{class:'num',text:l.id+'. '}),l.title),
+    h('div',{class:'meta'},h('span',{class:'tag',text:l.tool}),h('span',{text:l.min+' دقيقة'}))));
+  var acts=h('div',{class:'actions'});
+  acts.appendChild(h('button',{class:'btn primary',type:'button',text:'وضع العرض: خطوة خطوة',onclick:function(){focusMode(l)}}));
+  if(l.url)acts.appendChild(h('a',{class:'btn',href:l.url,target:'_blank',rel:'noopener',text:'فتح موقع الأداة'}));
+  app.appendChild(acts);
+  app.appendChild(h('div',{class:'prog',id:'labProg'},h('span',{text:'تقدّمك'}),h('div',{class:'bar'},h('i',{style:'width:'+r.p+'%'})),h('strong',{text:r.d+' من '+r.n})));
+  app.appendChild(h('div',{class:'box theory'},h('h2',{text:'الربط بالنظري'}),h('div',{text:l.link}),h('div',{style:'margin-top:8px;color:var(--muted)',text:'الهدف: '+l.goal})));
+
+  var prep=h('section',{class:'box'},h('h2',{text:'قبل أن تبدأ'}));
+  l.prep.forEach(function(t,i){prep.appendChild(checkRow(l,'p',i,h('div',{class:'body'},h('div',{class:'txt',text:t}))))});
+  app.appendChild(prep);
+
+  var st=h('section',{class:'box'},h('h2',{text:'الخطوات'}));
+  l.steps.forEach(function(s,i){
+    var body=h('div',{class:'body'},h('div',{class:'txt'},h('span',{class:'sn',text:(i+1)+'.'}),s.t));
+    if(s.ui.length)body.appendChild(uiRow(s.ui));
+    if(s.code)body.appendChild(codeBox(s.code));
+    st.appendChild(checkRow(l,'s',i,body))});
+  app.appendChild(st);
+
+  app.appendChild(h('section',{class:'box'},h('h2',{text:'ما تسلّمه'}),h('div',{text:l.out})));
+
+  var ok=h('section',{class:'box'},h('h2',{text:l.id===12?'معايير التقييم (40 درجة)':'تأكد من نجاحك'}));
+  l.ok.forEach(function(t,i){ok.appendChild(checkRow(l,'k',i,h('div',{class:'body'},h('div',{class:'txt',text:t}))))});
+  app.appendChild(ok);
+
+  var er=h('details',{class:'box'},h('summary',{text:l.id===12?'أسئلة ونصائح':'أخطاء شائعة'}));
+  var ul=h('ul',{class:'err'});l.err.forEach(function(t){ul.appendChild(h('li',{text:t}))});er.appendChild(ul);
+  app.appendChild(er);
+
+  var pager=h('div',{class:'pager'});
+  if(l.id>1)pager.appendChild(h('a',{class:'btn',href:'#lab-'+(l.id-1),text:'‹ المختبر السابق'}));else pager.appendChild(h('span'));
+  if(l.id<LABS.length)pager.appendChild(h('a',{class:'btn primary',href:'#lab-'+(l.id+1),text:'المختبر التالي ›'}));
+  app.appendChild(pager);
+  document.title='المختبر '+l.id+' · '+l.title;
+  window.scrollTo(0,0);
+}
+
+/* ---------- focus mode ---------- */
+var fr=document.getElementById('focusRoot'), fState=null;
+function focusMode(l){
+  var idx=0;
+  for(var i=0;i<l.steps.length;i++){if(!state.done[k(l,'s',i)]){idx=i;break}}
+  fState={l:l,i:idx};drawFocus();
+}
+function closeFocus(){fState=null;fr.innerHTML='';document.removeEventListener('keydown',fkey);lab(parseInt((location.hash.match(/lab-(\d+)/)||[])[1],10))}
+function fkey(e){if(!fState)return;if(e.key==='Escape')closeFocus();else if(e.key==='ArrowLeft')fgo(1);else if(e.key==='ArrowRight')fgo(-1)}
+function fgo(d){var n=fState.l.steps.length,j=fState.i+d;if(j<0||j>=n)return;fState.i=j;drawFocus()}
+function drawFocus(){
+  var l=fState.l,i=fState.i,s=l.steps[i],key=k(l,'s',i),n=l.steps.length;
+  fr.innerHTML='';
+  var slide=h('div',{class:'slide'},h('div',{class:'k',text:'المختبر '+l.id+' · الخطوة '+(i+1)+' من '+n}),h('div',{class:'big',text:s.t}));
+  if(s.ui.length)slide.appendChild(uiRow(s.ui));
+  if(s.code)slide.appendChild(codeBox(s.code));
+  var doneBtn=h('button',{class:'btn primary',type:'button',text:state.done[key]?'ألغِ التعليم':'تمّت هذه الخطوة',onclick:function(){if(state.done[key])delete state.done[key];else{state.done[key]=1}save();if(state.done[key]&&i<n-1){fState.i=i+1}drawFocus()}});
+  var f=h('div',{class:'focus',role:'dialog','aria-label':'وضع العرض'},
+    h('div',{class:'bar-top'},h('strong',{text:l.title}),h('div',{class:'bar',style:'flex:1'},h('i',{style:'width:'+Math.round(100*(i+1)/n)+'%'})),h('button',{class:'btn small',type:'button',text:'إغلاق',onclick:closeFocus})),
+    h('div',{class:'stage'},slide),
+    h('div',{class:'nav'},
+      h('button',{class:'btn',type:'button',text:'‹ السابق',onclick:function(){fgo(-1)}}),
+      doneBtn,
+      h('button',{class:'btn',type:'button',text:'التالي ›',onclick:function(){fgo(1)}})));
+  fr.appendChild(f);
+  document.removeEventListener('keydown',fkey);document.addEventListener('keydown',fkey);
+}
+
+/* ---------- tools catalog ---------- */
+var TOOLS=[
+ {n:'Canva',u:'https://www.canva.com',w:'تصميم نموذج العمل والشعار',l:[1,2],c:'مجاني بحساب Google. البديل: Miro.'},
+ {n:'Google Sites',u:'https://sites.google.com',w:'بناء موقع الشركة بلا كود',l:[2,3],c:'مجاني مع حساب Google.'},
+ {n:'Google Forms',u:'https://forms.google.com',w:'نموذج التواصل ونموذج الطلبات',l:[2,7,11],c:'مجاني.'},
+ {n:'Ecwid',u:'https://www.ecwid.com',w:'المتجر الإلكتروني: منتجات وشحن ودفع وطلبات',l:[3],c:'خطة مجانية، تحقق من شروطها. البديل: Shopify بنسخة تجريبية.'},
+ {n:'HubSpot CRM',u:'https://www.hubspot.com',w:'إدارة العملاء والصفقات ومراحل البيع',l:[4],c:'أداة CRM مجانية.'},
+ {n:'Excel',u:'',w:'تجهيز قائمة العملاء الوهميين واستيرادها إلى HubSpot',l:[4],c:'مثبّت على الحاسوب أو Google Sheets.'},
+ {n:'Odoo',u:'https://www.odoo.com',w:'نظام ERP: مبيعات ومخزون وفواتير',l:[5],c:'تجربة مجانية بتطبيق واحد، وشروطها تتغير. البدائل: Zoho Inventory أو ERPNext.'},
+ {n:'Trello',u:'https://trello.com',w:'لوحة Kanban وتوزيع المهام على الفريق',l:[6],c:'خطة مجانية.'},
+ {n:'Google Sheets',u:'https://sheets.google.com',w:'قاعدة بيانات الطلبات ومعادلات التحليل',l:[7,8,11],c:'مجاني.'},
+ {n:'Looker Studio',u:'https://lookerstudio.google.com',w:'لوحة مؤشرات الأداء KPIs',l:[8],c:'مجاني.'},
+ {n:'Google Analytics',u:'https://analytics.google.com',w:'تحليل زوار الموقع عبر الحساب التجريبي',l:[9],c:'مجاني.'},
+ {n:'ChatGPT أو Gemini أو Claude',u:'https://gemini.google.com',w:'هندسة الأوامر وخطة التسويق وتحليل المنافسين',l:[10,12],c:'يكفي حساب مجاني في أحدها.'},
+ {n:'Make',u:'https://www.make.com',w:'أتمتة المهام بين Sheets وGmail',l:[11],c:'خطة مجانية بحد شهري للعمليات. البديل: Zapier.'},
+ {n:'Gmail',u:'https://mail.google.com',w:'استقبال رسائل الأتمتة وإنشاء الحسابات',l:[3,11],c:'مجاني.'},
+ {n:'Google Docs',u:'https://docs.google.com',w:'ملف الروابط للمشروع الختامي',l:[10,12],c:'مجاني.'}
+];
+function tools(){
+  app.innerHTML='';
+  app.appendChild(h('div',{class:'lab-head'},
+    h('div',{class:'crumbs'},h('a',{href:'#',text:'الرئيسية'}),' › البرامج'),
+    h('h1',{text:'البرامج التي ستدرّسها'}),
+    h('p',{style:'color:var(--muted);margin:0',text:'خمسة عشر برنامجًا وخدمة. كلها تعمل من المتصفح، وأغلبها بخطة مجانية. اطلب من الطلاب فتح الحسابات قبل المحاضرة.'})));
+  var g=h('div',{class:'grid'});
+  TOOLS.forEach(function(t){
+    var card=h('div',{class:'lab-card',style:'--c:var(--c'+((TOOLS.indexOf(t))%6+1)+')'},
+      h('h3',{class:'ltr-name',text:t.n}),
+      h('div',{text:t.w}),
+      h('div',{class:'meta'},h('span',{text:'المختبرات: '+t.l.join('، ')})),
+      h('div',{style:'color:var(--muted);font-size:15px',text:t.c}));
+    var row=h('div',{class:'actions',style:'margin:4px 0 0'});
+    t.l.forEach(function(n){row.appendChild(h('a',{class:'btn small',href:'#lab-'+n,text:'مختبر '+n}))});
+    if(t.u)row.appendChild(h('a',{class:'btn small',href:t.u,target:'_blank',rel:'noopener',text:'فتح الموقع'}));
+    card.appendChild(row);g.appendChild(card)});
+  app.appendChild(g);
+  document.title='البرامج · مختبر الأعمال الرقمية';
+  window.scrollTo(0,0);
+}
+
+/* ---------- routing ---------- */
+function route(){
+  if(fState){fState=null;fr.innerHTML=''}
+  if(location.hash==='#tools'){tools();return}
+  var m=location.hash.match(/^#lab-(\d+)$/);
+  if(m)lab(parseInt(m[1],10));else{home();window.scrollTo(0,0)}
+}
+window.addEventListener('hashchange',route);
+var rb=document.getElementById('resetBtn'),armed=false;
+rb.addEventListener('click',function(){
+  if(!armed){armed=true;rb.textContent='اضغط مرة ثانية للتأكيد';setTimeout(function(){armed=false;rb.textContent='مسح تقدّمي'},3000);return}
+  state={done:{}};save();armed=false;rb.textContent='مسح تقدّمي';route();
+});
+route();
+</script>
+</body>
+</html>
