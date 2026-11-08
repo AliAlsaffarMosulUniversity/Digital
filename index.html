@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1B78B8">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('dbm-theme')==='dark'?'dark':'light')}catch(e){document.documentElement.setAttribute('data-theme','light')}</script>
 <title>مختبر الأعمال الرقمية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,13 +22,6 @@
   --body:'Readex Pro',system-ui,'Segoe UI',Tahoma,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
   color-scheme:light;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#101A2E; --card:#182540; --ink:#EAF1FF; --muted:#A3B4D4; --line:#2B3C5E;
-    --accent:#5CC0F2; --accent-ink:#06223A; --mark:#FFD84D; --ok:#5FD6A0; --warn:#FF9A70; --code:#0E1730;
-    color-scheme:dark;
-  }
 }
 :root[data-theme="dark"]{
   --bg:#101A2E; --card:#182540; --ink:#EAF1FF; --muted:#A3B4D4; --line:#2B3C5E;
@@ -92,6 +90,9 @@ h1,h2,h3{font-family:var(--display);line-height:1.35;text-wrap:balance;margin:0}
 .copy{position:absolute;top:6px;right:6px;font-family:var(--body);font-size:13px;padding:1px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card)}
 .code.has{padding-right:70px}
 .err li{margin-bottom:6px}
+.modal{position:fixed;inset:0;background:rgba(10,20,40,.55);z-index:30;display:grid;place-items:center;padding:18px}
+.modal .box{max-width:520px;width:100%;margin:0}
+.modal ul{padding-inline-start:20px;margin:8px 0 14px}
 .ltr-name{direction:ltr;text-align:right;unicode-bidi:plaintext}
 .err{padding-inline-start:20px;margin:0}
 details.box summary{cursor:pointer;font-family:var(--display);font-size:21px;font-weight:700}
@@ -115,10 +116,12 @@ footer{border-top:1px solid var(--line);padding:18px 0 32px;color:var(--muted);f
 <header class="top"><div class="wrap">
   <a class="brand" href="#" id="brand">مختبر الأعمال <b>الرقمية</b></a>
   <a class="btn small" href="#tools">البرامج</a>
+  <button class="btn small" id="installBtn" type="button">تثبيت التطبيق</button>
+  <button class="btn small" id="themeBtn" type="button" aria-label="تبديل الوضع الليلي والنهاري">الوضع الليلي</button>
   <button class="btn small" id="resetBtn" type="button">مسح تقدّمي</button>
 </div></header>
 <main class="wrap" id="app"></main>
-<footer><div class="wrap">إعداد م.م. علي عبد الوهاب الصفار، كلية الإدارة والاقتصاد، جامعة الموصل. واجهات الأدوات تتغير، فإن اختلف اسم زر فابحث عن أقرب اسم له.</div></footer>
+<footer><div class="wrap"><div id="visits" style="margin-bottom:6px"></div>إعداد م.م. علي عبد الوهاب الصفار، كلية الإدارة والاقتصاد، جامعة الموصل. واجهات الأدوات تتغير، فإن اختلف اسم زر فابحث عن أقرب اسم له.</div></footer>
 <div id="focusRoot"></div>
 
 <script>
@@ -542,6 +545,52 @@ function tools(){
   document.title='البرامج · مختبر الأعمال الرقمية';
   window.scrollTo(0,0);
 }
+
+/* ---------- theme ---------- */
+var themeBtn=document.getElementById('themeBtn');
+function curTheme(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light'}
+function paintThemeBtn(){themeBtn.textContent=curTheme()==='dark'?'الوضع النهاري':'الوضع الليلي';var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',curTheme()==='dark'?'#101A2E':'#1B78B8')}
+themeBtn.addEventListener('click',function(){var n=curTheme()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('dbm-theme',n)}catch(e){}paintThemeBtn()});
+paintThemeBtn();
+
+/* ---------- install ---------- */
+var dp=null, ib=document.getElementById('installBtn');
+var standalone=false;try{standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){}
+if(standalone)ib.style.display='none';
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e});
+window.addEventListener('appinstalled',function(){ib.style.display='none'});
+function closeModal(){var m=document.getElementById('modal');if(m)m.remove()}
+ib.addEventListener('click',function(){
+  if(dp){dp.prompt();dp.userChoice.then(function(){dp=null}).catch(function(){});return}
+  closeModal();
+  var m=h('div',{class:'modal',id:'modal',onclick:function(e){if(e.target===m)closeModal()}},
+   h('div',{class:'box',role:'dialog','aria-label':'تثبيت التطبيق'},
+    h('h2',{text:'تثبيت التطبيق على جهازك'}),
+    h('div',{text:'يعمل التثبيت من الرابط المنشور على GitHub Pages. افتح الرابط من المتصفح ثم:'}),
+    h('ul',{},
+      h('li',{text:'أندرويد (Chrome): اضغط قائمة النقاط الثلاث، ثم اختر "تثبيت التطبيق" أو "إضافة إلى الشاشة الرئيسية".'}),
+      h('li',{text:'آيفون (Safari): اضغط زر المشاركة، ثم "إضافة إلى الشاشة الرئيسية".'}),
+      h('li',{text:'ويندوز (Chrome أو Edge): اضغط أيقونة التثبيت في يمين شريط العنوان.'})),
+    h('button',{class:'btn primary',type:'button',text:'حسنًا',onclick:closeModal})));
+  document.body.appendChild(m);
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
+try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}
+
+/* ---------- visit counter ---------- */
+(function(){
+  var el=document.getElementById('visits'),NS='alsaffar-digital-labs',KEYN='visits';
+  var seen=false;try{seen=sessionStorage.getItem('dbm-seen')==='1'}catch(e){}
+  var local=0;try{local=parseInt(localStorage.getItem('dbm-local-visits')||'0',10)||0;if(!seen){local++;localStorage.setItem('dbm-local-visits',String(local))}}catch(e){}
+  function localOnly(){el.textContent=local?'زياراتك لهذا التطبيق على هذا الجهاز: '+local:''}
+  localOnly();
+  var url='https://abacus.jasoncameron.dev/'+(seen?'get':'hit')+'/'+NS+'/'+KEYN;
+  try{
+    fetch(url).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+      if(typeof d.value==='number'){el.textContent='عدد الزيارات: '+d.value.toLocaleString('ar-IQ-u-nu-latn');try{sessionStorage.setItem('dbm-seen','1')}catch(e){}}
+    }).catch(localOnly);
+  }catch(e){localOnly()}
+})();
 
 /* ---------- routing ---------- */
 function route(){
